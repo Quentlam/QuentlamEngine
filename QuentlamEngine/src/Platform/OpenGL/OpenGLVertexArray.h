@@ -1,0 +1,28 @@
+#pragma once
+#include "Quentlam/Renderer/VertexArray.h"
+
+namespace Quentlam
+{
+	class OpenGLVertexArray:public VertexArray
+	{
+	public:
+		OpenGLVertexArray();
+		virtual ~OpenGLVertexArray();
+		virtual void Bind()const override;
+		virtual void Unbind()const override;
+
+
+		virtual void AddVertexBuffer(const Quentlam::Ref<VertexBuffer>& vertexBuffer) override;
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer) override;
+
+		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffer()const override  { return m_VertexBuffers; };
+		virtual const Ref<IndexBuffer>& GetIndexBuffer()const override { return m_IndexBuffer; };
+
+
+	private:
+		std::vector<Ref<VertexBuffer>> m_VertexBuffers;
+		Ref<IndexBuffer> m_IndexBuffer;
+		uint32_t m_RendererID;
+	};
+}
+
