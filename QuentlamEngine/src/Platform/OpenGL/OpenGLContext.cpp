@@ -13,6 +13,8 @@ namespace Quentlam
 
 	void OpenGLContext::Init()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		QL_CORE_ASSERTS(status, "Faile to initialized Glad!");
@@ -36,6 +38,8 @@ namespace Quentlam
 	
 	void OpenGLContext::SwapBuffers()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glfwSwapBuffers(m_WindowHandle);
 	}
 

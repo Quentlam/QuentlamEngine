@@ -30,6 +30,8 @@ namespace Quentlam
 		}
 		inline static void Init()
 		{
+			QL_PROFILE_FUNCTION();
+
 			s_RendererAPI->Init();
 		}
 

@@ -42,6 +42,6 @@ namespace Quentlam
 		};
 
 		WindowData m_Data;
-
+		uint32_t s_Windowscount;
 	};
 }

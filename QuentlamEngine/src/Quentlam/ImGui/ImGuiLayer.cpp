@@ -22,6 +22,8 @@ namespace Quentlam
 
 	void ImGuiLayer::OnAttach()
 	{
+		QL_PROFILE_FUNCTION();
+
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -50,6 +52,8 @@ namespace Quentlam
 	}
 	void ImGuiLayer::OnDetach()
 	{
+		QL_PROFILE_FUNCTION();
+
 		// Cleanup
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplGlfw_Shutdown();
@@ -58,6 +62,8 @@ namespace Quentlam
 
 	void ImGuiLayer::Begin()
 	{
+		QL_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
@@ -65,6 +71,8 @@ namespace Quentlam
 
 	void ImGuiLayer::End()
 	{
+		QL_PROFILE_FUNCTION();
+
 		auto& app = Application::Get();
 		GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
 		ImGuiIO& io = ImGui::GetIO();
@@ -85,10 +93,6 @@ namespace Quentlam
 		}
 	}
 
-	void ImGuiLayer::OnImGuiLayer()
-	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
-	}
+
 
 }

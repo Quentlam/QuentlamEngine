@@ -29,16 +29,22 @@ namespace Quentlam
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glCreateVertexArrays(1, &m_RendererID);
 	}
 
 	void OpenGLVertexArray::Bind() const
 	{
+		QL_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 	}
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		QL_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
@@ -50,6 +56,8 @@ namespace Quentlam
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		QL_PROFILE_FUNCTION();
+
 		QL_CORE_ASSERTS(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 	
 		glBindVertexArray(m_RendererID);
@@ -74,12 +82,16 @@ namespace Quentlam
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		QL_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;
 	}
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 }
