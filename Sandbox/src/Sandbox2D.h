@@ -26,7 +26,6 @@ private:
 	Quentlam::Ref<Quentlam::VertexArray>	m_VertexArray;
 	Quentlam::Ref<Quentlam::Shader>         m_FlatColorShader;
 
-
 	glm::vec4 m_Square_Color{ 0.3f, 0.3f, 0.8f,1.0f };
 
 };

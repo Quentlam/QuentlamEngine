@@ -15,6 +15,8 @@ namespace Quentlam
 
 	Application::Application()
 	{
+		QL_PROFILE_FUNCTION();
+		
 		QL_CORE_ASSERTS(!s_Instance, "Application already exists! ");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -61,8 +63,12 @@ namespace Quentlam
 
 	void Application::Run()
 	{ 
+		QL_PROFILE_FUNCTION();
+
 		while (m_Running)
 		{
+			QL_PROFILE_SCOPE("RunLoop");
+
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
@@ -70,11 +76,20 @@ namespace Quentlam
 
 			if (!m_Minimized)
 			{
-				for (Layer* layer : m_LayerStack)layer->OnUpdate(timestep);
+				{
+					QL_PROFILE_SCOPE("LayerStack OnUpdate");
+
+					for (Layer* layer : m_LayerStack)layer->OnUpdate(timestep);
+				}
+				m_ImGuiLayer->Begin();
+				{
+					QL_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+					for (Layer* layer : m_LayerStack)layer->OnImGuiLayer();
+				}
+				m_ImGuiLayer->End();
 			}
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack)layer->OnImGuiLayer();
-			m_ImGuiLayer->End();
+
 
 
 
@@ -93,6 +108,8 @@ namespace Quentlam
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		QL_PROFILE_FUNCTION();
+
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;

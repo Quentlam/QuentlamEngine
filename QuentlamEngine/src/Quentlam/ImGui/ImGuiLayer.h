@@ -20,7 +20,6 @@ namespace Quentlam
 		void OnAttach()override;
 		void OnDetach()override;
 		
-		void OnImGuiLayer()override;
 		void Begin();
 		void End();
 

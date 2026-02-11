@@ -17,7 +17,7 @@
 #include "Quentlam/Core/Log.h"
 #include "spdlog/fmt/ostr.h"
 #include <spdlog/fmt/fmt.h> 
-
+#include "Quentlam/Debug/Instrumentor.h"
 
 #ifdef QL_PLATFORM_WINDOWS
 #include <Windows.h>

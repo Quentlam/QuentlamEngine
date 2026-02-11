@@ -24,16 +24,20 @@ namespace Quentlam
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		QL_PROFILE_FUNCTION();
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		QL_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 
 	void WindowsWindow::Init(const WindowProps& props)
 	{
+		QL_PROFILE_FUNCTION();
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
@@ -44,14 +48,18 @@ namespace Quentlam
 
 		if (!s_GLFWInitialized)
 		{
+			QL_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			QL_CORE_ASSERTS(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-		
+		{
+			QL_PROFILE_SCOPE("glfwCreateWindow");
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
+			++s_Windowscount;
+		}
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None: QL_CORE_ASSERTS(false,"Unknow RendererAPI");
@@ -167,16 +175,22 @@ namespace Quentlam
 
 	void WindowsWindow::Shutdown()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glfwDestroyWindow(m_Window);
 	}
 	void WindowsWindow::OnUpdate()
 	{
+		QL_PROFILE_FUNCTION();
+
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)
 	{
+		QL_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -187,6 +201,7 @@ namespace Quentlam
 
 	bool WindowsWindow::IsVSync() const
 	{
+
 		return m_Data.VSync;
 	}
 
