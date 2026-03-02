@@ -85,7 +85,7 @@ namespace Quentlam
 				{
 					QL_PROFILE_SCOPE("LayerStack OnImGuiRender");
 
-					for (Layer* layer : m_LayerStack)layer->OnImGuiLayer();
+					for (Layer* layer : m_LayerStack)layer->OnImGuiRender();
 				}
 				m_ImGuiLayer->End();
 			}

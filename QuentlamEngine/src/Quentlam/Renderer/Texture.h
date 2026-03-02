@@ -1,5 +1,6 @@
 #pragma once
 #include "Quentlam/Core/Core.h"
+#include <string>
 
 namespace Quentlam
 {

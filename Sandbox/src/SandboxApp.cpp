@@ -16,6 +16,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Sandbox2D.h"
+#include "GameLayer.h"
 
 
 class ExampleLayer : public Quentlam::Layer {
@@ -35,7 +36,7 @@ public:
 
 	}
 
-	void OnImGuiLayer() override
+	void OnImGuiRender() override
 	{
 
 	}
@@ -50,7 +51,7 @@ class Sandbox :public Quentlam::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+		PushLayer(new GameLayer());
 	}
 	~Sandbox()
 	{

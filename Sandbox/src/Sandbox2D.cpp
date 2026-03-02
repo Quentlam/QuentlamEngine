@@ -69,7 +69,7 @@ void Sandbox2D::OnUpdate(Quentlam::Timestep ts)
 
 }
 
-void Sandbox2D::OnImGuiLayer()
+void Sandbox2D::OnImGuiRender()
 {
 	QL_PROFILE_FUNCTION();
 	ImGui::Begin("Test");

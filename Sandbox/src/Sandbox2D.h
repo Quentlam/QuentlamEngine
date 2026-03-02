@@ -14,7 +14,7 @@ public:
     void OnDetach() override;
 	void OnEvent(Quentlam::Event& event) override;
 	void OnUpdate(Quentlam::Timestep ts) override;
-	void OnImGuiLayer() override;
+	void OnImGuiRender() override;
 
 
 
