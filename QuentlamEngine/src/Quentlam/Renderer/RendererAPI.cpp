@@ -15,7 +15,7 @@ namespace Quentlam
 
 	}
 
-	void RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
+	void RendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 
 	}

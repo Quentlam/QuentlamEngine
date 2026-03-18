@@ -1,0 +1,10 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.ipch
+*.db
+*.opensdf
+*.sdf
+bin/
+bin-int/

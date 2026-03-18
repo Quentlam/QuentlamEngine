@@ -21,7 +21,7 @@ void Sandbox2D::OnAttach()
 {
 	QL_PROFILE_FUNCTION();
 
-	m_Texture2D = Quentlam::Texture2D::Create("assets/texture/child.jpg");
+	m_Texture2D = Quentlam::Texture2D::Create("assets/texture/background.png");
 }
 
 void Sandbox2D::OnDetach()
@@ -58,14 +58,20 @@ void Sandbox2D::OnUpdate(Quentlam::Timestep ts)
 
 	{
 		QL_PROFILE_SCOPE("Renderer Draw");
+		static float rotation = 20.0f;
+		rotation += ts * 20.0f;
+
+
 		Quentlam::Renderer2D::BeginScene(m_CameraController.GetCamera());
-		Quentlam::Renderer2D::DrawQuad({ -1.0f,0.0f }, { 0.8f,0.8f }, m_Square_Color);
-		Quentlam::Renderer2D::DrawQuad({ 0.5f,-0.5f }, { 0.5f,0.75f }, { 0.2f,0.3f,0.8f,1.0f });
-		Quentlam::Renderer2D::DrawRotatedQuad({ 0.2f,0.5f,-0.05f }, { 5.0f,5.0f }, glm::radians(30.0f), { 0.7f,0.5f,0.8f,1.0f });
-		Quentlam::Renderer2D::DrawRotatedQuad({ 0.2f,0.5f,-0.1f }, { 10.0f,10.0f }, m_Texture2D, glm::radians(45.0f), 10.0f, { 0.7f,0.5f,0.8f,1.0f });
+		Quentlam::Renderer2D::DrawQuad({ -1.5f,0.0f }, { 0.8f,0.8f }, m_Square_Color);
+		Quentlam::Renderer2D::DrawQuad({ -1.0f,0.0f }, { 0.8f,0.8f }, { 0.8f,0.2f,0.3f,1.0f });//红色
+		Quentlam::Renderer2D::DrawQuad({ 0.5f,-0.5f }, { 0.5f,0.75f }, { 0.2f,0.3f,0.8f,1.0f });//蓝色
+		Quentlam::Renderer2D::DrawQuad({ 0.0f,0.0f, -0.1f }, { 10.0f,10.0f }, m_Texture2D, 10.0f, { 0.7f,0.5f,0.8f,1.0f });//background
+		Quentlam::Renderer2D::DrawRotatedQuad({ 0.2f,0.5f }, { 1.0f,1.0f }, 30.0f, { 0.7f,0.5f,0.8f,1.0f });//紫色30°旋转
+		Quentlam::Renderer2D::DrawRotatedQuad({ 0.0f,0.0f }, { 1.0f,1.0f }, m_Texture2D, rotation, 1.0f, { 0.7f,0.5f,0.8f,1.0f });//小棋盘
+		Quentlam::Renderer2D::EndScene();
 	}
 
-	Quentlam::Renderer2D::EndScene();
 
 }
 
