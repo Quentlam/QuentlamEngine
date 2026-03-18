@@ -22,6 +22,7 @@ namespace Quentlam
 		virtual const std::string& GetName() const override { return m_Name; };
 
 		void SetInt(const std::string& name, const int value)override;
+		void SetIntArray(const std::string& name,int* values,uint32_t count)override;
 		void SetFloat(const std::string& name, const float value)override;
 		void SetFloat3(const std::string& name, const glm::vec3& value)override;
 		void SetFloat4(const std::string& name, const glm::vec4& value)override;
@@ -30,6 +31,8 @@ namespace Quentlam
 
 
 		void UploadUniformInt(const std::string& name, int value);
+		void UploadUniformIntArray(const std::string& name, int* values, uint32_t count);
+
 		void UploadUniformFloat(const std::string& name, float value);
 		void UploadUniformFloat2(const std::string& name, const glm::vec2& values);
 		void UploadUniformFloat3(const std::string& name, const glm::vec3& values);
