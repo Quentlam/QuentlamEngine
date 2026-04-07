@@ -27,6 +27,7 @@
 #include "Quentlam/Renderer/Buffer.h"
 #include "Quentlam/Renderer/Shader.h"
 #include "Quentlam/Renderer/Texture.h"
+#include "Quentlam/Renderer/SubTexture2D.h"
 #include "Quentlam/Renderer/VertexArray.h"
 
 #include "Quentlam/Renderer/OrthographicCamera.h"

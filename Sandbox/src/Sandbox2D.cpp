@@ -22,6 +22,11 @@ void Sandbox2D::OnAttach()
 	QL_PROFILE_FUNCTION();
 
 	m_Texture2D = Quentlam::Texture2D::Create("assets/texture/background.png");
+	m_SpriteSheet = Quentlam::Texture2D::Create("assets/game/textures/RPGpack_sheet_2X.png");
+	m_TextureStairs = Quentlam::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 7,6 }, { 128,128 });
+	m_TextureBarrel = Quentlam::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 8,2 }, { 128,128 });
+	m_TextureTree = Quentlam::SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 }, { 1,2 });
+
 }
 
 void Sandbox2D::OnDetach()
@@ -47,6 +52,8 @@ void Sandbox2D::OnEvent(Quentlam::Event& event)
 void Sandbox2D::OnUpdate(Quentlam::Timestep ts)
 {
 	QL_PROFILE_FUNCTION();
+	Quentlam::Renderer2D::ResetStats();
+
 	m_CameraController.OnUpdate(ts);
 
 	//Renderer
@@ -55,6 +62,9 @@ void Sandbox2D::OnUpdate(Quentlam::Timestep ts)
 		Quentlam::RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 		Quentlam::RenderCommand::Clear();
 	}
+
+
+#if 0
 
 	{
 		QL_PROFILE_SCOPE("Renderer Draw");
@@ -72,6 +82,16 @@ void Sandbox2D::OnUpdate(Quentlam::Timestep ts)
 		Quentlam::Renderer2D::EndScene();
 	}
 
+#endif
+
+
+	Quentlam::Renderer2D::BeginScene(m_CameraController.GetCamera());
+	Quentlam::Renderer2D::DrawQuad({ 0.0f,0.0f,0.0f }, { 1.0f,1.0f }, m_TextureStairs);
+	Quentlam::Renderer2D::DrawQuad({ 1.0f,0.0f,0.0f }, { 1.0f,1.0f }, m_TextureBarrel);
+	Quentlam::Renderer2D::DrawQuad({ -1.0f,0.0f,0.0f }, { 1.0f,2.0f }, m_TextureTree);
+
+	Quentlam::Renderer2D::EndScene();
+
 
 }
 
@@ -79,7 +99,15 @@ void Sandbox2D::OnImGuiLayer()
 {
 	QL_PROFILE_FUNCTION();
 	ImGui::Begin("Test");
-	ImGui::Text("Just for Test");
+
+	auto stats = Quentlam::Renderer2D::GetStatistics();
+	ImGui::Text("Renderer2D Stats:");
+	ImGui::Text("Draw Calls: %d", stats.DrawCalls);
+	ImGui::Text("Quads: %d", stats.QuadCount);
+	ImGui::Text("Vertices: %d", stats.GetTotalVertexCount());
+	ImGui::Text("Indices: %d", stats.GetTotalIndexCount());
+
+
 	ImGui::ColorEdit4("Square color", glm::value_ptr(m_Square_Color));
 	ImGui::End();
 }

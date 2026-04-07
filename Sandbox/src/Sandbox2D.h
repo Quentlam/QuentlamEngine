@@ -23,6 +23,13 @@ private:
 
 	//Temp
 	Quentlam::Ref<Quentlam::Texture2D>		m_Texture2D;
+	Quentlam::Ref<Quentlam::Texture2D>		m_CheckerboardTexture;
+	Quentlam::Ref<Quentlam::Texture2D>		m_SpriteSheet;
+	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureStairs;
+	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureBarrel;
+	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureTree;
+
+
 	Quentlam::Ref<Quentlam::VertexArray>	m_VertexArray;
 	Quentlam::Ref<Quentlam::Shader>         m_FlatColorShader;
 
