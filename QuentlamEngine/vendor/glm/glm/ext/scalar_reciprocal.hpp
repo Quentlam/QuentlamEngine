@@ -1,7 +1,7 @@
 /// @ref ext_scalar_reciprocal
 /// @file glm/ext/scalar_reciprocal.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_scalar_reciprocal GLM_EXT_scalar_reciprocal
 /// @ingroup ext

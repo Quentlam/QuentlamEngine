@@ -1,7 +1,7 @@
 /// @ref gtx_type_trait
 /// @file glm/gtx/type_trait.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_type_trait GLM_GTX_type_trait
 /// @ingroup gtx

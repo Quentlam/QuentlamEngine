@@ -1,7 +1,7 @@
 /// @ref gtx_closest_point
 /// @file glm/gtx/closest_point.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_closest_point GLM_GTX_closest_point
 /// @ingroup gtx

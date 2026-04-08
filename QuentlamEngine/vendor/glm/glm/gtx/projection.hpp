@@ -1,7 +1,7 @@
 /// @ref gtx_projection
 /// @file glm/gtx/projection.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_projection GLM_GTX_projection
 /// @ingroup gtx

@@ -1,7 +1,7 @@
 /// @ref gtx_type_aligned
 /// @file glm/gtx/type_aligned.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_quaternion (dependence)
 ///
 /// @defgroup gtx_type_aligned GLM_GTX_type_aligned

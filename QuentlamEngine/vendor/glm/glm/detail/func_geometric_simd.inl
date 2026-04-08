@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/detail/func_geometric_simd.inl
 
 #include "../simd/geometric.h"

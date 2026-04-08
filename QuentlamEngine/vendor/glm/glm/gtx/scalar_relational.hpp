@@ -1,7 +1,7 @@
 /// @ref gtx_scalar_relational
 /// @file glm/gtx/scalar_relational.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_scalar_relational GLM_GTX_scalar_relational
 /// @ingroup gtx

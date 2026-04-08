@@ -1,7 +1,7 @@
 /// @ref gtc_bitfield
 /// @file glm/gtc/bitfield.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_bitfield (dependence)
 ///
 /// @defgroup gtc_bitfield GLM_GTC_bitfield

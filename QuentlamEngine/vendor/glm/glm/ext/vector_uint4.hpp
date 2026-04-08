@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/ext/vector_uint4.hpp
 
 #pragma once
@@ -6,7 +6,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_vector
+	/// @addtogroup Base_vector
 	/// @{
 
 	/// 4 components vector of unsigned integer numbers.

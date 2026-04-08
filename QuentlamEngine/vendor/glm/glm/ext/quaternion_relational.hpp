@@ -8,7 +8,7 @@
 ///
 /// Include <glm/ext/quaternion_relational.hpp> to use the features of this extension.
 ///
-/// @see core_vector_relational
+/// @see Base_vector_relational
 /// @see ext_vector_relational
 /// @see ext_matrix_relational
 /// @see ext_quaternion_float

@@ -1,7 +1,7 @@
 /// @ref gtc_random
 /// @file glm/gtc/random.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_random (extended)
 ///
 /// @defgroup gtc_random GLM_GTC_random

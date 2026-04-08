@@ -1,7 +1,7 @@
 /// @ref ext_matrix_uint3x2
 /// @file glm/ext/matrix_uint3x2.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_matrix_uint3x2 GLM_EXT_matrix_uint3x2
 /// @ingroup ext

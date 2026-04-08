@@ -1,7 +1,7 @@
 /// @ref gtx_exterior_product
 /// @file glm/gtx/exterior_product.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_exterior_product (dependence)
 ///
 /// @defgroup gtx_exterior_product GLM_GTX_exterior_product

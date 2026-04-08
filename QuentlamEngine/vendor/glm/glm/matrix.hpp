@@ -1,14 +1,14 @@
-/// @ref core
+/// @ref Base
 /// @file glm/matrix.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.6 Matrix Functions</a>
 ///
-/// @defgroup core_func_matrix Matrix functions
-/// @ingroup core
+/// @defgroup Base_func_matrix Matrix functions
+/// @ingroup Base
 ///
 /// Provides GLSL matrix functions.
 ///
-/// Include <glm/matrix.hpp> to use these core features.
+/// Include <glm/matrix.hpp> to use these Base features.
 
 #pragma once
 
@@ -89,7 +89,7 @@ namespace detail
 	};
 }//namespace detail
 
-	 /// @addtogroup core_func_matrix
+	 /// @addtogroup Base_func_matrix
 	 /// @{
 
 	 /// Multiply matrix x by matrix y component-wise, i.e.,

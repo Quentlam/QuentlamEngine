@@ -1,7 +1,7 @@
 /// @ref gtc_matrix_integer
 /// @file glm/gtc/matrix_integer.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_matrix_integer GLM_GTC_matrix_integer
 /// @ingroup gtc

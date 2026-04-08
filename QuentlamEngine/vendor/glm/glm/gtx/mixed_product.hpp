@@ -1,7 +1,7 @@
 /// @ref gtx_mixed_product
 /// @file glm/gtx/mixed_product.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_mixed_product GLM_GTX_mixed_producte
 /// @ingroup gtx

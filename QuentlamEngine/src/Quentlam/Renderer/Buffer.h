@@ -24,7 +24,7 @@ namespace Quentlam
 		case ShaderDataType::Int4:	    return 4 * 4;
 		case ShaderDataType::Bool:	    return 1;
 		}
-		QL_CORE_ASSERTS(false, "Unknodw ShaderDataType!");
+		QL_Base_ASSERTS(false, "Unknodw ShaderDataType!");
 		return 0;
 
 	}
@@ -59,7 +59,7 @@ namespace Quentlam
 				case ShaderDataType::Int4:	    return 4;
 				case ShaderDataType::Bool:	    return 1;
 			}
-			QL_CORE_ASSERTS(false, "Unknodw ShaderDataType!");
+			QL_Base_ASSERTS(false, "Unknodw ShaderDataType!");
 			return 0;
 		}
 

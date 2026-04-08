@@ -1,7 +1,7 @@
 /// @ref gtx_color_space_YCoCg
 /// @file glm/gtx/color_space_YCoCg.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_color_space_YCoCg GLM_GTX_color_space_YCoCg
 /// @ingroup gtx

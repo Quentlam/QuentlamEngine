@@ -1,7 +1,7 @@
 /// @ref gtx_optimum_pow
 /// @file glm/gtx/optimum_pow.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_optimum_pow GLM_GTX_optimum_pow
 /// @ingroup gtx

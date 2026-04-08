@@ -1,7 +1,7 @@
 /// @ref gtx_quaternion
 /// @file glm/gtx/quaternion.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_extented_min_max (dependence)
 ///
 /// @defgroup gtx_quaternion GLM_GTX_quaternion

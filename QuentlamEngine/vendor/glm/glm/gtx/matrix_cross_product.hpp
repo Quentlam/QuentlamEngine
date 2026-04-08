@@ -1,7 +1,7 @@
 /// @ref gtx_matrix_cross_product
 /// @file glm/gtx/matrix_cross_product.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_extented_min_max (dependence)
 ///
 /// @defgroup gtx_matrix_cross_product GLM_GTX_matrix_cross_product

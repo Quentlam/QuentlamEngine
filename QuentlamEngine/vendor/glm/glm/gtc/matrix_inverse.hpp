@@ -1,7 +1,7 @@
 /// @ref gtc_matrix_inverse
 /// @file glm/gtc/matrix_inverse.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_matrix_inverse GLM_GTC_matrix_inverse
 /// @ingroup gtc

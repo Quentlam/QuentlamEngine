@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/ext/vector_bool2_precision.hpp
 
 #pragma once
@@ -6,7 +6,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_vector_precision
+	/// @addtogroup Base_vector_precision
 	/// @{
 
 	/// 2 components vector of high qualifier bool numbers.

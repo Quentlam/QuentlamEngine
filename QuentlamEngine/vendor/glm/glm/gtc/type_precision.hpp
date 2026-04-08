@@ -1,7 +1,7 @@
 /// @ref gtc_type_precision
 /// @file glm/gtc/type_precision.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_quaternion (dependence)
 ///
 /// @defgroup gtc_type_precision GLM_GTC_type_precision
@@ -653,15 +653,15 @@ namespace glm
 	typedef vec<1, float, highp> highp_fvec1;
 
 	/// High Single-qualifier floating-point vector of 2 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<2, float, highp> highp_fvec2;
 
 	/// High Single-qualifier floating-point vector of 3 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<3, float, highp> highp_fvec3;
 
 	/// High Single-qualifier floating-point vector of 4 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<4, float, highp> highp_fvec4;
 
 
@@ -670,15 +670,15 @@ namespace glm
 	typedef vec<1, f32, lowp> lowp_f32vec1;
 
 	/// Low single-qualifier floating-point vector of 2 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<2, f32, lowp> lowp_f32vec2;
 
 	/// Low single-qualifier floating-point vector of 3 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<3, f32, lowp> lowp_f32vec3;
 
 	/// Low single-qualifier floating-point vector of 4 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<4, f32, lowp> lowp_f32vec4;
 
 	/// Medium single-qualifier floating-point vector of 1 component.
@@ -686,15 +686,15 @@ namespace glm
 	typedef vec<1, f32, mediump> mediump_f32vec1;
 
 	/// Medium single-qualifier floating-point vector of 2 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<2, f32, mediump> mediump_f32vec2;
 
 	/// Medium single-qualifier floating-point vector of 3 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<3, f32, mediump> mediump_f32vec3;
 
 	/// Medium single-qualifier floating-point vector of 4 components.
-	/// @see core_precision
+	/// @see Base_precision
 	typedef vec<4, f32, mediump> mediump_f32vec4;
 
 	/// High single-qualifier floating-point vector of 1 component.

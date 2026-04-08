@@ -1,7 +1,7 @@
 /// @ref gtx_handed_coordinate_space
 /// @file glm/gtx/handed_coordinate_space.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_handed_coordinate_space GLM_GTX_handed_coordinate_space
 /// @ingroup gtx

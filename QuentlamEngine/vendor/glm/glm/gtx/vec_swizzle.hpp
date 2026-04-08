@@ -1,7 +1,7 @@
 /// @ref gtx_vec_swizzle
 /// @file glm/gtx/vec_swizzle.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_vec_swizzle GLM_GTX_vec_swizzle
 /// @ingroup gtx

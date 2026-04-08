@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/ext/matrix_double2x4_precision.hpp
 
 #pragma once
@@ -6,7 +6,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_matrix_precision
+	/// @addtogroup Base_matrix_precision
 	/// @{
 
 	/// 2 columns of 4 components matrix of double-precision floating-point numbers using low precision arithmetic in term of ULPs.

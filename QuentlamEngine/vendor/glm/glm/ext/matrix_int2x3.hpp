@@ -1,7 +1,7 @@
 /// @ref ext_matrix_int2x3
 /// @file glm/ext/matrix_int2x3.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_matrix_int2x3 GLM_EXT_matrix_int2x3
 /// @ingroup ext

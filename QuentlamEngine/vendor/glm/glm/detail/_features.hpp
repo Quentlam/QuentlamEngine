@@ -179,7 +179,7 @@
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2008/n2670.htm
 
 // #define GLM_CXX11_NOEXCEPT
-// Allowing move constructors to throw [noexcept]	N3050	GCC 4.6 (core language only)
+// Allowing move constructors to throw [noexcept]	N3050	GCC 4.6 (Base language only)
 // http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2010/n3050.html
 
 //

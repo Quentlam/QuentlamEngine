@@ -1,7 +1,7 @@
 /// @ref gtc_packing
 /// @file glm/gtc/packing.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_packing GLM_GTC_packing
 /// @ingroup gtc

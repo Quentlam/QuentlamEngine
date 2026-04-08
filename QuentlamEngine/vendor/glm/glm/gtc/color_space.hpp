@@ -1,7 +1,7 @@
 /// @ref gtc_color_space
 /// @file glm/gtc/color_space.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_color_space (dependence)
 ///
 /// @defgroup gtc_color_space GLM_GTC_color_space

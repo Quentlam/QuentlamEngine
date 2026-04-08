@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/ext/matrix_float4x2.hpp
 
 #pragma once
@@ -6,7 +6,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_matrix
+	/// @addtogroup Base_matrix
 	/// @{
 
 	/// 4 columns of 2 components matrix of single-precision floating-point numbers.

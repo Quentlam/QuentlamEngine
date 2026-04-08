@@ -1,7 +1,7 @@
 /// @ref gtx_extend
 /// @file glm/gtx/extend.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_extend GLM_GTX_extend
 /// @ingroup gtx

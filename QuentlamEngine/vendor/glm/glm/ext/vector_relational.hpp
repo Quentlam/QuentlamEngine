@@ -1,7 +1,7 @@
 /// @ref ext_vector_relational
 /// @file glm/ext/vector_relational.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see ext_scalar_integer (dependence)
 ///
 /// @defgroup ext_vector_relational GLM_EXT_vector_relational
@@ -11,7 +11,7 @@
 ///
 /// Include <glm/ext/vector_relational.hpp> to use the features of this extension.
 ///
-/// @see core_vector_relational
+/// @see Base_vector_relational
 /// @see ext_scalar_relational
 /// @see ext_matrix_relational
 

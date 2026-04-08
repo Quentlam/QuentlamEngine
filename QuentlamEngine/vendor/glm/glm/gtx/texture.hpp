@@ -1,7 +1,7 @@
 /// @ref gtx_texture
 /// @file glm/gtx/texture.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_texture GLM_GTX_texture
 /// @ingroup gtx

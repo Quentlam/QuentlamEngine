@@ -1,7 +1,7 @@
 /// @ref gtx_wrap
 /// @file glm/gtx/wrap.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_wrap GLM_GTX_wrap
 /// @ingroup gtx

@@ -1,7 +1,7 @@
 /// @ref gtx_log_base
 /// @file glm/gtx/log_base.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_log_base GLM_GTX_log_base
 /// @ingroup gtx

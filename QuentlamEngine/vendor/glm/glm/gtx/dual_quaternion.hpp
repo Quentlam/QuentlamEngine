@@ -2,7 +2,7 @@
 /// @file glm/gtx/dual_quaternion.hpp
 /// @author Maksim Vorobiev (msomeone@gmail.com)
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_constants (dependence)
 /// @see gtc_quaternion (dependence)
 ///

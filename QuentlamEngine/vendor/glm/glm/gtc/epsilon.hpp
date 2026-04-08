@@ -1,7 +1,7 @@
 /// @ref gtc_epsilon
 /// @file glm/gtc/epsilon.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_quaternion (dependence)
 ///
 /// @defgroup gtc_epsilon GLM_GTC_epsilon

@@ -8,7 +8,7 @@
 ///
 /// Include <glm/ext/quaternion_exponential.hpp> to use the features of this extension.
 ///
-/// @see core_exponential
+/// @see Base_exponential
 /// @see ext_quaternion_float
 /// @see ext_quaternion_double
 

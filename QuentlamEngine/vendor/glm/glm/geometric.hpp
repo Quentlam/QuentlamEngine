@@ -1,14 +1,14 @@
-/// @ref core
+/// @ref Base
 /// @file glm/geometric.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.5 Geometric Functions</a>
 ///
-/// @defgroup core_func_geometric Geometric functions
-/// @ingroup core
+/// @defgroup Base_func_geometric Geometric functions
+/// @ingroup Base
 ///
 /// These operate on vectors as vectors, not component-wise.
 ///
-/// Include <glm/geometric.hpp> to use these core features.
+/// Include <glm/geometric.hpp> to use these Base features.
 
 #pragma once
 
@@ -16,7 +16,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_func_geometric
+	/// @addtogroup Base_func_geometric
 	/// @{
 
 	/// Returns the length of x, i.e., sqrt(x * x).

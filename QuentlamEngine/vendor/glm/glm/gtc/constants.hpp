@@ -1,7 +1,7 @@
 /// @ref gtc_constants
 /// @file glm/gtc/constants.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_constants GLM_GTC_constants
 /// @ingroup gtc

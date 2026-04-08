@@ -1,7 +1,7 @@
 /// @ref gtx_common
 /// @file glm/gtx/common.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_common GLM_GTX_common
 /// @ingroup gtx

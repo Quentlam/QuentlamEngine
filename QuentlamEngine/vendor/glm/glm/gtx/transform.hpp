@@ -1,7 +1,7 @@
 /// @ref gtx_transform
 /// @file glm/gtx/transform.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_matrix_transform (dependence)
 /// @see gtx_transform
 /// @see gtx_transform2

@@ -8,7 +8,7 @@
 ///
 /// Include <glm/ext/vector_common.hpp> to use the features of this extension.
 ///
-/// @see core_common
+/// @see Base_common
 /// @see ext_scalar_common
 
 #pragma once

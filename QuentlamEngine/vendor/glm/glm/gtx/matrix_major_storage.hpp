@@ -1,7 +1,7 @@
 /// @ref gtx_matrix_major_storage
 /// @file glm/gtx/matrix_major_storage.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_extented_min_max (dependence)
 ///
 /// @defgroup gtx_matrix_major_storage GLM_GTX_matrix_major_storage

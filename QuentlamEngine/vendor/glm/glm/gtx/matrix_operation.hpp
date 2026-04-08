@@ -1,7 +1,7 @@
 /// @ref gtx_matrix_operation
 /// @file glm/gtx/matrix_operation.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_matrix_operation GLM_GTX_matrix_operation
 /// @ingroup gtx

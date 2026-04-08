@@ -1,7 +1,7 @@
 /// @ref gtx_extended_min_max
 /// @file glm/gtx/extended_min_max.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_extended_min_max GLM_GTX_extended_min_max
 /// @ingroup gtx

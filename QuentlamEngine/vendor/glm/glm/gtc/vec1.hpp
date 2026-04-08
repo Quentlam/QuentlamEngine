@@ -1,7 +1,7 @@
 /// @ref gtc_vec1
 /// @file glm/gtc/vec1.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_vec1 GLM_GTC_vec1
 /// @ingroup gtc

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Quentlam/Core/Log.h"
+#include "Quentlam/Base/Log.h"
 
 #include <algorithm>
 #include <chrono>
@@ -44,9 +44,9 @@ namespace Quentlam {
 				// Subsequent profiling output meant for the original session will end up in the
 				// newly opened session instead.  That's better than having badly formatted
 				// profiling output.
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
+				if (Log::GetBaseLogger()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					QL_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
+					QL_Base_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, m_CurrentSession->Name);
 				}
 				InternalEndSession();
 			}
@@ -59,9 +59,9 @@ namespace Quentlam {
 			}
 			else
 			{
-				if (Log::GetCoreLogger()) // Edge case: BeginSession() might be before Log::Init()
+				if (Log::GetBaseLogger()) // Edge case: BeginSession() might be before Log::Init()
 				{
-					QL_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+					QL_Base_ERROR("Instrumentor could not open results file '{0}'.", filepath);
 				}
 			}
 		}

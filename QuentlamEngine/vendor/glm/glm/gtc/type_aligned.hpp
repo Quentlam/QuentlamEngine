@@ -1,7 +1,7 @@
 /// @ref gtc_type_aligned
 /// @file glm/gtc/type_aligned.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_type_aligned GLM_GTC_type_aligned
 /// @ingroup gtc

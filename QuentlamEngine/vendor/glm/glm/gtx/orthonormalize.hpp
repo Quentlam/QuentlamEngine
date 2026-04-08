@@ -1,7 +1,7 @@
 /// @ref gtx_orthonormalize
 /// @file glm/gtx/orthonormalize.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_extented_min_max (dependence)
 ///
 /// @defgroup gtx_orthonormalize GLM_GTX_orthonormalize

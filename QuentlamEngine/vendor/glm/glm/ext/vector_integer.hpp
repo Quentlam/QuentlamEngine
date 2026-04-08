@@ -1,7 +1,7 @@
 /// @ref ext_vector_integer
 /// @file glm/ext/vector_integer.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see ext_vector_integer (dependence)
 ///
 /// @defgroup ext_vector_integer GLM_EXT_vector_integer

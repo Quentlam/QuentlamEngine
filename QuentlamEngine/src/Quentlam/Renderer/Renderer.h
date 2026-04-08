@@ -3,7 +3,7 @@
 #include "RenderCommand.h"
 #include "Shader.h"
 #include "OrthographicCamera.h"
-#include "Quentlam/Core/Core.h"
+#include "Quentlam/Base/Core.h"
 
 namespace Quentlam
 { 

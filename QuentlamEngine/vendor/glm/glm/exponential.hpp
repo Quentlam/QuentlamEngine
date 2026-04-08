@@ -1,16 +1,16 @@
-/// @ref core
+/// @ref Base
 /// @file glm/exponential.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.2 Exponential Functions</a>
 ///
-/// @defgroup core_func_exponential Exponential functions
-/// @ingroup core
+/// @defgroup Base_func_exponential Exponential functions
+/// @ingroup Base
 ///
 /// Provides GLSL exponential functions
 ///
 /// These all operate component-wise. The description is per component.
 ///
-/// Include <glm/exponential.hpp> to use these core features.
+/// Include <glm/exponential.hpp> to use these Base features.
 
 #pragma once
 
@@ -22,7 +22,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_func_exponential
+	/// @addtogroup Base_func_exponential
 	/// @{
 
 	/// Returns 'base' raised to the power 'exponent'.

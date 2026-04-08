@@ -12,10 +12,10 @@ namespace Quentlam
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: QL_CORE_ASSERTS(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None: QL_Base_ASSERTS(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(filepath);
 		}
-		QL_CORE_ASSERTS(false, "Unknown RendererAPI");
+		QL_Base_ASSERTS(false, "Unknown RendererAPI");
 		return nullptr;
 	}
 
@@ -23,19 +23,19 @@ namespace Quentlam
 	{
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: QL_CORE_ASSERTS(false, "RendererAPI::None is currently not supported!"); return nullptr;
+		case RendererAPI::API::None: QL_Base_ASSERTS(false, "RendererAPI::None is currently not supported!"); return nullptr;
 		case RendererAPI::API::OpenGL: return std::make_shared<OpenGLShader>(name,vertexSrc,fragmentSrc);
 
 		}
-		QL_CORE_ASSERTS(false, "Unknown RendererAPI");
+		QL_Base_ASSERTS(false, "Unknown RendererAPI");
 		return nullptr;
 	}
 
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
-		QL_CORE_ASSERTS(!Exist(name), "Shader already exists!")
+		QL_Base_ASSERTS(!Exist(name), "Shader already exists!")
 		m_Shaders[name] = shader;
-		QL_CORE_INFO("Load shader : \"{0}\" success", name);
+		QL_Base_INFO("Load shader : \"{0}\" success", name);
 	}
 
 
@@ -66,7 +66,7 @@ namespace Quentlam
 
 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
-		QL_CORE_ASSERTS(m_Shaders.find(name) != m_Shaders.end(), "Shader not found!")
+		QL_Base_ASSERTS(m_Shaders.find(name) != m_Shaders.end(), "Shader not found!")
 		return m_Shaders[name];
 	}
 

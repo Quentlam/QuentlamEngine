@@ -1,7 +1,7 @@
 /// @ref gtx_normalize_dot
 /// @file glm/gtx/normalize_dot.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_fast_square_root (dependence)
 ///
 /// @defgroup gtx_normalize_dot GLM_GTX_normalize_dot
