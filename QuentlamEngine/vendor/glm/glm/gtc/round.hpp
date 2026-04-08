@@ -1,7 +1,7 @@
 /// @ref gtc_round
 /// @file glm/gtc/round.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_round (dependence)
 ///
 /// @defgroup gtc_round GLM_GTC_round

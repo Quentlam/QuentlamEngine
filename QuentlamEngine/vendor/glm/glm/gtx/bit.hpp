@@ -1,7 +1,7 @@
 /// @ref gtx_bit
 /// @file glm/gtx/bit.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_bit GLM_GTX_bit
 /// @ingroup gtx

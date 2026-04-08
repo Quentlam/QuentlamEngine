@@ -1,7 +1,7 @@
 /// @ref gtx_spline
 /// @file glm/gtx/spline.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_spline GLM_GTX_spline
 /// @ingroup gtx

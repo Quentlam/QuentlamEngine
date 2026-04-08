@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 
 #if GLM_ARCH & GLM_ARCH_SSE2_BIT
 

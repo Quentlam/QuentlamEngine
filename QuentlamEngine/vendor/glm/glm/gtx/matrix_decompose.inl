@@ -26,7 +26,7 @@ namespace detail
 }//namespace detail
 
 	// Matrix decompose
-	// http://www.opensource.apple.com/source/WebCore/WebCore-514/platform/graphics/transforms/TransformationMatrix.cpp
+	// http://www.opensource.apple.com/source/WebBase/WebBase-514/platform/graphics/transforms/TransformationMatrix.cpp
 	// Decomposes the mode matrix to translations,rotation scale components
 
 	template<typename T, qualifier Q>
@@ -192,7 +192,7 @@ namespace detail
 	}
 
 	// Recomposes a model matrix from a previously-decomposed matrix
-	// http://www.opensource.apple.com/source/WebCore/WebCore-514/platform/graphics/transforms/TransformationMatrix.cpp
+	// http://www.opensource.apple.com/source/WebBase/WebBase-514/platform/graphics/transforms/TransformationMatrix.cpp
 	// https://stackoverflow.com/a/75573092/1047040
 	template <typename T, qualifier Q>
 	GLM_FUNC_DECL mat<4, 4, T, Q> recompose(

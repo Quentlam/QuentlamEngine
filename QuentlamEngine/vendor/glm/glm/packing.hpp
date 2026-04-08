@@ -1,17 +1,17 @@
-/// @ref core
+/// @ref Base
 /// @file glm/packing.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.4 Floating-Point Pack and Unpack Functions</a>
 /// @see gtc_packing
 ///
-/// @defgroup core_func_packing Floating-Point Pack and Unpack Functions
-/// @ingroup core
+/// @defgroup Base_func_packing Floating-Point Pack and Unpack Functions
+/// @ingroup Base
 ///
 /// Provides GLSL functions to pack and unpack half, single and double-precision floating point values into more compact integer types.
 ///
 /// These functions do not operate component-wise, rather as described in each case.
 ///
-/// Include <glm/packing.hpp> to use these core features.
+/// Include <glm/packing.hpp> to use these Base features.
 
 #pragma once
 
@@ -21,7 +21,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_func_packing
+	/// @addtogroup Base_func_packing
 	/// @{
 
 	/// First, converts each component of the normalized floating-point value v into 8- or 16-bit integer values.

@@ -1,7 +1,7 @@
 /// @ref gtx_norm
 /// @file glm/gtx/norm.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_quaternion (dependence)
 /// @see gtx_component_wise (dependence)
 ///

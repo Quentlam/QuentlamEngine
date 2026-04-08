@@ -1,6 +1,6 @@
 #include "qlpch.h"
 #include "ImGuiLayer.h"
-#include "Quentlam/Core/Application.h"
+#include "Quentlam/Base/Application.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>

@@ -1,7 +1,7 @@
 /// @ref gtx_polar_coordinates
 /// @file glm/gtx/polar_coordinates.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_polar_coordinates GLM_GTX_polar_coordinates
 /// @ingroup gtx

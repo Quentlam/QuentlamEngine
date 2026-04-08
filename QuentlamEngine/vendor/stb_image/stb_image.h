@@ -6436,7 +6436,7 @@ static int stbi__pic_is4(stbi__context* s, const char* str)
     return 1;
 }
 
-static int stbi__pic_test_core(stbi__context* s)
+static int stbi__pic_test_Base(stbi__context* s)
 {
     int i;
 
@@ -6480,7 +6480,7 @@ static void stbi__copyval(int channel, stbi_uc* dest, const stbi_uc* src)
             dest[i] = src[i];
 }
 
-static stbi_uc* stbi__pic_load_core(stbi__context* s, int width, int height, int* comp, stbi_uc* result)
+static stbi_uc* stbi__pic_load_Base(stbi__context* s, int width, int height, int* comp, stbi_uc* result)
 {
     int act_comp = 0, num_packets = 0, y, chained;
     stbi__pic_packet packets[10];
@@ -6620,7 +6620,7 @@ static void* stbi__pic_load(stbi__context* s, int* px, int* py, int* comp, int r
     if (!result) return stbi__errpuc("outofmem", "Out of memory");
     memset(result, 0xff, x * y * 4);
 
-    if (!stbi__pic_load_core(s, x, y, comp, result)) {
+    if (!stbi__pic_load_Base(s, x, y, comp, result)) {
         STBI_FREE(result);
         result = 0;
     }
@@ -6634,7 +6634,7 @@ static void* stbi__pic_load(stbi__context* s, int* px, int* py, int* comp, int r
 
 static int stbi__pic_test(stbi__context* s)
 {
-    int r = stbi__pic_test_core(s);
+    int r = stbi__pic_test_Base(s);
     stbi__rewind(s);
     return r;
 }
@@ -7194,7 +7194,7 @@ static int stbi__gif_info(stbi__context* s, int* x, int* y, int* comp)
 // Radiance RGBE HDR loader
 // originally by Nicolas Schulz
 #ifndef STBI_NO_HDR
-static int stbi__hdr_test_core(stbi__context* s, const char* signature)
+static int stbi__hdr_test_Base(stbi__context* s, const char* signature)
 {
     int i;
     for (i = 0; signature[i]; ++i)
@@ -7206,10 +7206,10 @@ static int stbi__hdr_test_core(stbi__context* s, const char* signature)
 
 static int stbi__hdr_test(stbi__context* s)
 {
-    int r = stbi__hdr_test_core(s, "#?RADIANCE\n");
+    int r = stbi__hdr_test_Base(s, "#?RADIANCE\n");
     stbi__rewind(s);
     if (!r) {
-        r = stbi__hdr_test_core(s, "#?RGBE\n");
+        r = stbi__hdr_test_Base(s, "#?RGBE\n");
         stbi__rewind(s);
     }
     return r;

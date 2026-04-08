@@ -1,7 +1,7 @@
 /// @ref gtc_integer
 /// @file glm/gtc/integer.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtc_integer (dependence)
 ///
 /// @defgroup gtc_integer GLM_GTC_integer

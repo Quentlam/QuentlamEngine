@@ -1,7 +1,7 @@
 /// @ref gtc_reciprocal
 /// @file glm/gtc/reciprocal.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_reciprocal GLM_GTC_reciprocal
 /// @ingroup gtc

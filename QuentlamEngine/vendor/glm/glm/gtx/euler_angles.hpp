@@ -1,7 +1,7 @@
 /// @ref gtx_euler_angles
 /// @file glm/gtx/euler_angles.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_euler_angles GLM_GTX_euler_angles
 /// @ingroup gtx

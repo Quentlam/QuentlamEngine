@@ -1,7 +1,7 @@
 /// @ref gtx_matrix_factorisation
 /// @file glm/gtx/matrix_factorisation.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_matrix_factorisation GLM_GTX_matrix_factorisation
 /// @ingroup gtx

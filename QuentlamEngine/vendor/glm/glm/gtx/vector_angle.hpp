@@ -1,7 +1,7 @@
 /// @ref gtx_vector_angle
 /// @file glm/gtx/vector_angle.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_quaternion (dependence)
 /// @see gtx_epsilon (dependence)
 ///

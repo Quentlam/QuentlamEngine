@@ -1,7 +1,7 @@
 /// @ref gtx_normal
 /// @file glm/gtx/normal.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_extented_min_max (dependence)
 ///
 /// @defgroup gtx_normal GLM_GTX_normal

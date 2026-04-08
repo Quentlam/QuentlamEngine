@@ -1,10 +1,10 @@
-/// @ref core
+/// @ref Base
 /// @file glm/trigonometric.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.1 Angle and Trigonometry Functions</a>
 ///
-/// @defgroup core_func_trigonometric Angle and Trigonometry Functions
-/// @ingroup core
+/// @defgroup Base_func_trigonometric Angle and Trigonometry Functions
+/// @ingroup Base
 ///
 /// Function parameters specified as angle are assumed to be in units of radians.
 /// In no case will any of these functions result in a divide by zero error. If
@@ -12,7 +12,7 @@
 ///
 /// These all operate component-wise. The description is per component.
 ///
-/// Include <glm/trigonometric.hpp> to use these core features.
+/// Include <glm/trigonometric.hpp> to use these Base features.
 ///
 /// @see ext_vector_trigonometric
 
@@ -23,7 +23,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_func_trigonometric
+	/// @addtogroup Base_func_trigonometric
 	/// @{
 
 	/// Converts degrees to radians and returns the result.

@@ -1,6 +1,6 @@
 #pragma once
 #include "qlpch.h"
-#include "Quentlam/Core/Window.h"
+#include "Quentlam/Base/Window.h"
 #include "Quentlam/Renderer/GraphicsContext.h"
 
 struct GLFWwindow;

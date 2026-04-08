@@ -1,7 +1,7 @@
 /// @ref gtx_perpendicular
 /// @file glm/gtx/perpendicular.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_projection (dependence)
 ///
 /// @defgroup gtx_perpendicular GLM_GTX_perpendicular

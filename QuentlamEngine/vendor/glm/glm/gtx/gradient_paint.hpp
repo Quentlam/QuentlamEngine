@@ -1,7 +1,7 @@
 /// @ref gtx_gradient_paint
 /// @file glm/gtx/gradient_paint.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_optimum_pow (dependence)
 ///
 /// @defgroup gtx_gradient_paint GLM_GTX_gradient_paint

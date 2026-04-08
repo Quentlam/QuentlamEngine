@@ -8,7 +8,7 @@ namespace Quentlam
 	OpenGLContext::OpenGLContext(GLFWwindow* windowHandle)
 		:m_WindowHandle(windowHandle)
 	{
-		QL_CORE_ASSERTS(windowHandle, "window handle is null!");
+		QL_Base_ASSERTS(windowHandle, "window handle is null!");
 	}
 
 	void OpenGLContext::Init()
@@ -17,11 +17,11 @@ namespace Quentlam
 
 		glfwMakeContextCurrent(m_WindowHandle);
 		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
-		QL_CORE_ASSERTS(status, "Faile to initialized Glad!");
-		QL_CORE_INFO("OpenGL Info:");
-		QL_CORE_INFO("OpenGL Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
-		QL_CORE_INFO("OpenGL Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
-		QL_CORE_INFO("OpenGL Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
+		QL_Base_ASSERTS(status, "Faile to initialized Glad!");
+		QL_Base_INFO("OpenGL Info:");
+		QL_Base_INFO("OpenGL Vendor: {0}", reinterpret_cast<const char*>(glGetString(GL_VENDOR)));
+		QL_Base_INFO("OpenGL Renderer: {0}", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+		QL_Base_INFO("OpenGL Version: {0}", reinterpret_cast<const char*>(glGetString(GL_VERSION)));
 	
 
 
@@ -31,7 +31,7 @@ namespace Quentlam
 		glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
 		glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
 
-		QL_CORE_ASSERTS(versionMajor < 4 || (versionMajor == 4 && versionMinor >= 5),"Quentlam Engine requires at least OpenGL version 4.5!")
+		QL_Base_ASSERTS(versionMajor < 4 || (versionMajor == 4 && versionMinor >= 5),"Quentlam Engine requires at least OpenGL version 4.5!")
 #endif
 
 	}

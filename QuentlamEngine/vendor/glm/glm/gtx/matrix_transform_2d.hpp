@@ -2,7 +2,7 @@
 /// @file glm/gtx/matrix_transform_2d.hpp
 /// @author Miguel Ángel Pérez Martínez
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_matrix_transform_2d GLM_GTX_matrix_transform_2d
 /// @ingroup gtx

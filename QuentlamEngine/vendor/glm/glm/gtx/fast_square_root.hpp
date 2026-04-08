@@ -1,7 +1,7 @@
 /// @ref gtx_fast_square_root
 /// @file glm/gtx/fast_square_root.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_fast_square_root GLM_GTX_fast_square_root
 /// @ingroup gtx

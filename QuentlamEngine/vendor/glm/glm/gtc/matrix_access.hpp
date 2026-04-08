@@ -1,7 +1,7 @@
 /// @ref gtc_matrix_access
 /// @file glm/gtc/matrix_access.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_matrix_access GLM_GTC_matrix_access
 /// @ingroup gtc

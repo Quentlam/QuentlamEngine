@@ -2,7 +2,7 @@
 
 #include "qlpch.h"
 
-#include "../Core/Core.h"
+#include "../Base/Core.h"
 #include "../Events/Event.h"
 
 namespace Quentlam

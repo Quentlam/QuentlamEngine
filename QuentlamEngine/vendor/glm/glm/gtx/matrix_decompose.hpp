@@ -1,7 +1,7 @@
 /// @ref gtx_matrix_decompose
 /// @file glm/gtx/matrix_decompose.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_matrix_decompose GLM_GTX_matrix_decompose
 /// @ingroup gtx

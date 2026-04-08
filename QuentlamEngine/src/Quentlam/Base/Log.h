@@ -10,12 +10,12 @@ namespace Quentlam
 
 	public:
 		static void Init();
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return s_CoreLogger; }
+		inline static std::shared_ptr<spdlog::logger>& GetBaseLogger() { return s_BaseLogger; }
 		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return s_ClientLogger; }
 
 
 	private:
-		static std::shared_ptr<spdlog::logger> s_CoreLogger;
+		static std::shared_ptr<spdlog::logger> s_BaseLogger;
 		static std::shared_ptr<spdlog::logger> s_ClientLogger;
 
 	};
@@ -26,12 +26,12 @@ namespace Quentlam
 
 
 
-//Core Logger macros
-#define QL_CORE_TRACE(...)   ::Quentlam::Log::GetCoreLogger()->trace(__VA_ARGS__)
-#define QL_CORE_INFO(...)    ::Quentlam::Log::GetCoreLogger()->info(__VA_ARGS__)
-#define QL_CORE_WARN(...)    ::Quentlam::Log::GetCoreLogger()->warn(__VA_ARGS__)
-#define QL_CORE_ERROR(...)   ::Quentlam::Log::GetCoreLogger()->error(__VA_ARGS__)
-#define QL_CORE_FATAL(...)   ::Quentlam::Log::GetCoreLogger()->fatal(__VA_ARGS__)
+//Base Logger macros
+#define QL_Base_TRACE(...)   ::Quentlam::Log::GetBaseLogger()->trace(__VA_ARGS__)
+#define QL_Base_INFO(...)    ::Quentlam::Log::GetBaseLogger()->info(__VA_ARGS__)
+#define QL_Base_WARN(...)    ::Quentlam::Log::GetBaseLogger()->warn(__VA_ARGS__)
+#define QL_Base_ERROR(...)   ::Quentlam::Log::GetBaseLogger()->error(__VA_ARGS__)
+#define QL_Base_FATAL(...)   ::Quentlam::Log::GetBaseLogger()->fatal(__VA_ARGS__)
 
 
 //Client Logger macros

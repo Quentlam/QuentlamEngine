@@ -1,7 +1,7 @@
 /// @ref gtx_raw_data
 /// @file glm/gtx/raw_data.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_raw_data GLM_GTX_raw_data
 /// @ingroup gtx

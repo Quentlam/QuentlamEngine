@@ -1,7 +1,7 @@
 /// @ref ext_vector_packing
 /// @file glm/ext/vector_packing.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_vector_packing GLM_EXT_vector_packing
 /// @ingroup ext

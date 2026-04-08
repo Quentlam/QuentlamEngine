@@ -1,4 +1,4 @@
-/// @ref core
+/// @ref Base
 /// @file glm/detail/type_mat3x4.hpp
 
 #pragma once

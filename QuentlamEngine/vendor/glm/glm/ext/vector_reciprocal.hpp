@@ -1,7 +1,7 @@
 /// @ref ext_vector_reciprocal
 /// @file glm/ext/vector_reciprocal.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_vector_reciprocal GLM_EXT_vector_reciprocal
 /// @ingroup ext

@@ -3,7 +3,7 @@
 /// @date 2007-05-21 / 2011-06-07
 /// @author Christophe Riccio
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_component_wise GLM_GTX_component_wise
 /// @ingroup gtx

@@ -1,6 +1,6 @@
 #include <Quentlam.h>
 //----------Entry Point --------------------------
-#include <Quentlam/Core/EntryPoint.h>
+#include <Quentlam/Base/EntryPoint.h>
 
 
 

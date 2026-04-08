@@ -1,7 +1,7 @@
 /// @ref ext_scalar_integer
 /// @file glm/ext/scalar_integer.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup ext_scalar_integer GLM_EXT_scalar_integer
 /// @ingroup ext

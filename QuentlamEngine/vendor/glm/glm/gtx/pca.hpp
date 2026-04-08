@@ -1,7 +1,7 @@
 /// @ref gtx_pca
 /// @file glm/gtx/pca.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see ext_scalar_relational (dependence)
 ///
 /// @defgroup gtx_pca GLM_GTX_pca

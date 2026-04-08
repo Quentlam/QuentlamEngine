@@ -1,7 +1,7 @@
 /// @ref gtc_noise
 /// @file glm/gtc/noise.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_noise GLM_GTC_noise
 /// @ingroup gtc

@@ -1,7 +1,7 @@
 /// @ref gtx_compatibility
 /// @file glm/gtx/compatibility.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_compatibility GLM_GTX_compatibility
 /// @ingroup gtx

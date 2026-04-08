@@ -2,7 +2,7 @@
 /// @file glm/gtx/matrix_interpolation.hpp
 /// @author Ghenadii Ursachi (the.asteroth@gmail.com)
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_matrix_interpolation GLM_GTX_matrix_interpolation
 /// @ingroup gtx

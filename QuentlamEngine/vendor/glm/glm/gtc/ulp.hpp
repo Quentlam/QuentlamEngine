@@ -1,7 +1,7 @@
 /// @ref gtc_ulp
 /// @file glm/gtc/ulp.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtc_ulp GLM_GTC_ulp
 /// @ingroup gtc

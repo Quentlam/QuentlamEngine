@@ -1,16 +1,16 @@
 #pragma once
 
 //For use by Quentlam applications
-#include "Quentlam/Core/Application.h"
-#include "Quentlam/Core/Layer.h"
-#include "Quentlam/Core/Log.h"
+#include "Quentlam/Base/Application.h"
+#include "Quentlam/Base/Layer.h"
+#include "Quentlam/Base/Log.h"
 
-#include "Quentlam/Core/Timestep.h"
+#include "Quentlam/Base/Timestep.h"
 
 
-#include "Quentlam/Core/Input.h"
-#include "Quentlam/Core/KeyCodes.h"
-#include "Quentlam/Core/MouseButtonCodes.h"
+#include "Quentlam/Base/Input.h"
+#include "Quentlam/Base/KeyCodes.h"
+#include "Quentlam/Base/MouseButtonCodes.h"
 #include "Quentlam/Renderer/OrthographicCameraController.h"
 
 

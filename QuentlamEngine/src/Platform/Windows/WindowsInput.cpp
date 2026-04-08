@@ -1,7 +1,7 @@
 #include "qlpch.h"
 #include <GLFW/glfw3.h>
 #include "WindowsInput.h"
-#include "Quentlam/Core/Application.h"
+#include "Quentlam/Base/Application.h"
 
 namespace Quentlam
 {

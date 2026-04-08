@@ -1,7 +1,7 @@
 /// @ref gtx_rotate_vector
 /// @file glm/gtx/rotate_vector.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_transform (dependence)
 ///
 /// @defgroup gtx_rotate_vector GLM_GTX_rotate_vector

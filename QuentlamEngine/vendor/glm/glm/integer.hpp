@@ -1,10 +1,10 @@
-/// @ref core
+/// @ref Base
 /// @file glm/integer.hpp
 ///
 /// @see <a href="http://www.opengl.org/registry/doc/GLSLangSpec.4.20.8.pdf">GLSL 4.20.8 specification, section 8.8 Integer Functions</a>
 ///
-/// @defgroup core_func_integer Integer functions
-/// @ingroup core
+/// @defgroup Base_func_integer Integer functions
+/// @ingroup Base
 ///
 /// Provides GLSL functions on integer types
 ///
@@ -12,7 +12,7 @@
 /// The notation [a, b] means the set of bits from bit-number a through bit-number
 /// b, inclusive. The lowest-order bit is bit 0.
 ///
-/// Include <glm/integer.hpp> to use these core features.
+/// Include <glm/integer.hpp> to use these Base features.
 
 #pragma once
 
@@ -22,7 +22,7 @@
 
 namespace glm
 {
-	/// @addtogroup core_func_integer
+	/// @addtogroup Base_func_integer
 	/// @{
 
 	/// Adds 32-bit unsigned integer x and y, returning the sum

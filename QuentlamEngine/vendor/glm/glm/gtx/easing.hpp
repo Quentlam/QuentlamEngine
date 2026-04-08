@@ -2,7 +2,7 @@
 /// @file glm/gtx/easing.hpp
 /// @author Robert Chisholm
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_easing GLM_GTX_easing
 /// @ingroup gtx

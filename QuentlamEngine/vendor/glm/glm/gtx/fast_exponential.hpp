@@ -1,7 +1,7 @@
 /// @ref gtx_fast_exponential
 /// @file glm/gtx/fast_exponential.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 /// @see gtx_half_float (dependence)
 ///
 /// @defgroup gtx_fast_exponential GLM_GTX_fast_exponential

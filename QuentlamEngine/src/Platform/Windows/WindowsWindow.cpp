@@ -13,7 +13,7 @@ namespace Quentlam
 	static bool s_GLFWInitialized = false;
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		QL_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+		QL_Base_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
 
@@ -43,14 +43,14 @@ namespace Quentlam
 		m_Data.Height = props.Height;
 
 
-		QL_CORE_INFO("Create Window {0} ({1},{2})", props.Title, props.Width, props.Height);
+		QL_Base_INFO("Create Window {0} ({1},{2})", props.Title, props.Width, props.Height);
 
 
 		if (!s_GLFWInitialized)
 		{
 			QL_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
-			QL_CORE_ASSERTS(success, "Could not initialize GLFW!");
+			QL_Base_ASSERTS(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
@@ -62,7 +62,7 @@ namespace Quentlam
 		}
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: QL_CORE_ASSERTS(false,"Unknow RendererAPI");
+		case RendererAPI::API::None: QL_Base_ASSERTS(false,"Unknow RendererAPI");
 			break;
 		case RendererAPI::API::OpenGL:  m_Context = new OpenGLContext(m_Window);
 			break;
@@ -80,7 +80,7 @@ namespace Quentlam
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				QL_CORE_WARN("{0} , {1}",width,height);
+				QL_Base_WARN("{0} , {1}",width,height);
 				data.EventCallback(event);//这里相当于执行一个函数。
 
 			});

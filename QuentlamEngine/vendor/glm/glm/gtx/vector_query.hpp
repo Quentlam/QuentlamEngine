@@ -1,7 +1,7 @@
 /// @ref gtx_vector_query
 /// @file glm/gtx/vector_query.hpp
 ///
-/// @see core (dependence)
+/// @see Base (dependence)
 ///
 /// @defgroup gtx_vector_query GLM_GTX_vector_query
 /// @ingroup gtx
