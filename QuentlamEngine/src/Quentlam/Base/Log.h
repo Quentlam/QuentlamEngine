@@ -29,7 +29,7 @@ namespace Quentlam
 //Base Logger macros
 #define QL_Base_TRACE(...)   ::Quentlam::Log::GetBaseLogger()->trace(__VA_ARGS__)
 #define QL_Base_INFO(...)    ::Quentlam::Log::GetBaseLogger()->info(__VA_ARGS__)
-#define QL_Base_WARN(...)    ::Quentlam::Log::GetBaseLogger()->warn(__VA_ARGS__)
+#define QL_CORE_WARN(...)    ::Quentlam::Log::GetBaseLogger()->warn(__VA_ARGS__)
 #define QL_Base_ERROR(...)   ::Quentlam::Log::GetBaseLogger()->error(__VA_ARGS__)
 #define QL_Base_FATAL(...)   ::Quentlam::Log::GetBaseLogger()->fatal(__VA_ARGS__)
 

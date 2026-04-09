@@ -17,7 +17,7 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 		
-		QL_Base_ASSERTS(!s_Instance, "Application already exists! ");
+		QL_CORE_ASSERT(!s_Instance, "Application already exists! ");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
@@ -46,6 +46,11 @@ namespace Quentlam
 		layer->OnAttach();
 	}
 
+
+	void Application::Close()
+	{
+		m_Running = false;
+	}
 
 	void Application::OnEvent(Event& e)//
 	{
@@ -113,14 +118,14 @@ namespace Quentlam
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;
-			QL_Base_WARN("m_Minimized : {0}", m_Minimized);
+			QL_CORE_WARN("m_Minimized : {0}", m_Minimized);
 			return false;
 		}
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 
 		m_Minimized = false;
-		QL_Base_WARN("m_Minimized : {0}", m_Minimized);
+		QL_CORE_WARN("m_Minimized : {0}", m_Minimized);
 		return false;
 	}
 }
