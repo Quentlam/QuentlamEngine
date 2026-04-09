@@ -22,7 +22,7 @@ namespace Quentlam
 		case Quentlam::ShaderDataType::Int4:		return GL_INT;
 		case Quentlam::ShaderDataType::Bool:		return GL_BOOL;
 		}
-		QL_Base_ASSERTS(false, "Unknodw ShaderDataType!");
+		QL_CORE_ASSERT(false, "Unknodw ShaderDataType!");
 		return 0;
 	}
 
@@ -58,7 +58,7 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
-		QL_Base_ASSERTS(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		QL_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
 	
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();

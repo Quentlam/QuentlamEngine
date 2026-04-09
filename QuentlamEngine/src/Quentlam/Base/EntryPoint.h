@@ -11,7 +11,7 @@ int main(int argc,char** argv)
 	Quentlam::Log::Init();
 
 	QL_PROFILE_BEGIN_SESSION("Startup", "QuentlamProfile-Startup.json");
-	QL_Base_WARN("Initialized Log!");
+	QL_CORE_WARN("Initialized Log!");
 	auto app = Quentlam::CreateApplication();
 	QL_PROFILE_END_SESSION();
 

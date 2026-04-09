@@ -37,7 +37,7 @@ namespace Quentlam
 			QL_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
 		}
-		QL_Base_ASSERTS(data, "Failed to load image");
+		QL_CORE_ASSERT(data, "Failed to load image");
 		m_Width = width;
 		m_Height = height;
 
@@ -52,7 +52,7 @@ namespace Quentlam
 			internalFormat = GL_RGB8;
 			dataFormat = GL_RGB;
 		}
-		QL_Base_ASSERTS(internalFormat & dataFormat, "Format not support!")
+		QL_CORE_ASSERT(internalFormat & dataFormat, "Format not support!")
 
 		m_InternalFormat = internalFormat;
 		m_DataFormat = dataFormat;
@@ -84,7 +84,7 @@ namespace Quentlam
 		QL_PROFILE_FUNCTION();
 
 		uint32_t bpp = m_DataFormat == GL_RGBA ? 4 : 3;
-		QL_Base_ASSERTS(size == m_Width * m_Height * bpp,"Data must be entire texture!");
+		QL_CORE_ASSERT(size == m_Width * m_Height * bpp,"Data must be entire texture!");
 		glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, data);
 	}
 

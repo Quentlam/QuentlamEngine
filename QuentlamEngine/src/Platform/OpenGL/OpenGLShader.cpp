@@ -10,7 +10,7 @@ namespace Quentlam
 		if (type == "vertex")return GL_VERTEX_SHADER;
 		if (type == "fragment" || type == "pixel")return GL_FRAGMENT_SHADER;
 
-		QL_Base_ASSERTS(false, "Unknow shader type!");
+		QL_CORE_ASSERT(false, "Unknow shader type!");
 		return 0;
 	}
 
@@ -91,10 +91,10 @@ namespace Quentlam
 		while (pos != std::string::npos)
 		{
 			size_t eol = source.find_first_of("\r\n", pos);
-			QL_Base_ASSERTS(eol != std::string::npos, "Syntax error");
+			QL_CORE_ASSERT(eol != std::string::npos, "Syntax error");
 			size_t begin = pos + typeTokenLength + 1;
 			std::string type = source.substr(begin, eol - begin);
-			QL_Base_ASSERTS(ShaderTypeFromString(type),"Invalid shader type specified");
+			QL_CORE_ASSERT(ShaderTypeFromString(type),"Invalid shader type specified");
 
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
@@ -109,7 +109,7 @@ namespace Quentlam
 		QL_PROFILE_FUNCTION();
 
 		GLuint program = glCreateProgram();
-		QL_Base_ASSERTS(shaderSources.size() <= 2, "We only support 2 shaders for now!");
+		QL_CORE_ASSERT(shaderSources.size() <= 2, "We only support 2 shaders for now!");
 		std::array<GLenum, 2> glShaderIDs;
 		uint32_t glShaderIDsIndex = 0;
 		for (auto& kv : shaderSources)
@@ -143,9 +143,9 @@ namespace Quentlam
 				QL_Base_ERROR("{0}", infoLog.data());
 				if (type == GL_VERTEX_SHADER)
 				{
-					QL_Base_ASSERTS(false, "Vertex Shader compilation failure!");
+					QL_CORE_ASSERT(false, "Vertex Shader compilation failure!");
 				}
-				else QL_Base_ASSERTS(false, "Fragment Shader compilation failure!");
+				else QL_CORE_ASSERT(false, "Fragment Shader compilation failure!");
 				break;
 			}
 			glAttachShader(program, shader);
@@ -176,7 +176,7 @@ namespace Quentlam
 
 
 			QL_Base_ERROR("{0}", infoLog.data());
-			QL_Base_ASSERTS(false, "Link program failure!");
+			QL_CORE_ASSERT(false, "Link program failure!");
 			return;
 		}
 

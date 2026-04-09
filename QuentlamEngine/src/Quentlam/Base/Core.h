@@ -56,15 +56,15 @@
 #endif
 
 #ifdef QL_DEBUG
-	#define QL_ENABLE_ASSERTS
+	#define QL_ENABLE_ASSERT
 #endif
 
-#ifdef QL_ENABLE_ASSERTS
-#define QL_ASSERTS(x,...) {if(!(x)) {QL_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
-#define QL_Base_ASSERTS(x,...) {if(!(x)) {QL_Base_ERROR("Assertion Failed: {0}",__VA_ARGS__); __debugbreak();}}
+#ifdef QL_ENABLE_ASSERT
+#define QL_ASSERT(x,...) {if(!(x)) {QL_ERROR("Assertion Failed: {0}", __VA_ARGS__); __debugbreak();}}
+#define QL_CORE_ASSERT(x,...) {if(!(x)) {QL_Base_ERROR("Assertion Failed: {0}",__VA_ARGS__); __debugbreak();}}
 #else
-#define QL_ASSERTS(x,...)
-#define QL_Base_ASSERTS(x,...)
+#define QL_ASSERT(x,...)
+#define QL_CORE_ASSERT(x,...)
 #endif
 
 

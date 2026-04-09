@@ -29,6 +29,7 @@ private:
 	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureBarrel;
 	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureTree;
 
+	Quentlam::Ref<Quentlam::FrameBuffer>	m_Framebuffer;
 
 	Quentlam::Ref<Quentlam::VertexArray>	m_VertexArray;
 	Quentlam::Ref<Quentlam::Shader>         m_FlatColorShader;

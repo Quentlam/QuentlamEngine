@@ -50,7 +50,7 @@ namespace Quentlam
 		{
 			QL_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
-			QL_Base_ASSERTS(success, "Could not initialize GLFW!");
+			QL_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 			s_GLFWInitialized = true;
 		}
@@ -62,7 +62,7 @@ namespace Quentlam
 		}
 		switch (Renderer::GetAPI())
 		{
-		case RendererAPI::API::None: QL_Base_ASSERTS(false,"Unknow RendererAPI");
+		case RendererAPI::API::None: QL_CORE_ASSERT(false,"Unknow RendererAPI");
 			break;
 		case RendererAPI::API::OpenGL:  m_Context = new OpenGLContext(m_Window);
 			break;
@@ -80,7 +80,7 @@ namespace Quentlam
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				QL_Base_WARN("{0} , {1}",width,height);
+				QL_CORE_WARN("{0} , {1}",width,height);
 				data.EventCallback(event);//这里相当于执行一个函数。
 
 			});
