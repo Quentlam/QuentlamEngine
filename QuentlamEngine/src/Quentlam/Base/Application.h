@@ -22,9 +22,8 @@ namespace Quentlam
 	class QUENTLAM_API Application
 	{
 	public:
-		Application();
+		Application(const std::string& name = "Quentlam App");
 		virtual ~Application();
-		void Run();
 
 		void OnEvent(Event& e);
 
@@ -34,13 +33,16 @@ namespace Quentlam
 		inline static Application& Get() { return *s_Instance; }
 		inline Window& GetWindow() { return *m_Window; }
 
+		ImGuiLayer* GetImGuiLayer() { return m_ImGuiLayer; }
+
 		void Close();
+		void Run();
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
-		std::unique_ptr<Window> m_Window;
+		Scope<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;

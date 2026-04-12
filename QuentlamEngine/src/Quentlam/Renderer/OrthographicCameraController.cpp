@@ -18,30 +18,30 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
-		if (Input::IsKeyPressed(QL_KEY_A))
+		if (Input::IsKeyPressed(Key::A))
 		{
 			m_CameraPosition.x -= m_CameraTranslationSpeed * ts;
 		}
-		if (Input::IsKeyPressed(QL_KEY_D))
+		if (Input::IsKeyPressed(Key::D))
 		{
 			m_CameraPosition.x += m_CameraTranslationSpeed * ts;
 		}
-		if (Input::IsKeyPressed(QL_KEY_S))
+		if (Input::IsKeyPressed(Key::S))
 		{
 			m_CameraPosition.y -= m_CameraTranslationSpeed * ts;
 		}
-		if (Input::IsKeyPressed(QL_KEY_W))
+		if (Input::IsKeyPressed(Key::W))
 		{
 			m_CameraPosition.y += m_CameraTranslationSpeed * ts;
 		}
 
 		if (m_Rotation)
 		{
-			if (Quentlam::Input::IsKeyPressed(QL_KEY_Q))
+			if (Quentlam::Input::IsKeyPressed(Key::Q))
 			{
 				m_CameraRotation += m_CameraRotationSpeed * ts;
 			}
-			if (Quentlam::Input::IsKeyPressed(QL_KEY_E))
+			if (Quentlam::Input::IsKeyPressed(Key::E))
 			{
 				m_CameraRotation -= m_CameraRotationSpeed * ts;
 			}
@@ -60,6 +60,14 @@ namespace Quentlam
 		dispatcher.Dispatch<WindowResizeEvent>(QL_BIND_EVENT_FN(OrthographicCameraController::OnWindowsResized));
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+
+		m_AspectRatio = width / height;
+		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
+	}
+
 	bool OrthographicCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		QL_PROFILE_FUNCTION();
@@ -74,8 +82,8 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
-		m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+		OnResize((float)e.GetWidth(), (float)e.GetHeight());
+
 		return false;
 	}
 
