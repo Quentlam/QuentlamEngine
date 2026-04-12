@@ -5,11 +5,11 @@
 
 
 
-class Sandbox2D : public Quentlam::Layer
+class EditorLayer : public Quentlam::Layer
 {
 public:
-	Sandbox2D();
-	~Sandbox2D() = default;
+	EditorLayer();
+	~EditorLayer() = default;
     void OnAttach() override;
     void OnDetach() override;
 	void OnEvent(Quentlam::Event& event) override;
@@ -29,6 +29,10 @@ private:
 	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureBarrel;
 	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureTree;
 
+	Quentlam::Ref<Quentlam::FrameBuffer>	m_Framebuffer;
+	glm::vec2 m_ViewportSize{ 0.0f,0.0f };
+
+	bool m_ViewportFocused = false, m_ViewportHovered = false;
 
 	Quentlam::Ref<Quentlam::VertexArray>	m_VertexArray;
 	Quentlam::Ref<Quentlam::Shader>         m_FlatColorShader;

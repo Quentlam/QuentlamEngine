@@ -13,13 +13,13 @@ namespace Quentlam
 	Application* Application::s_Instance = nullptr;
 
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		QL_PROFILE_FUNCTION();
 		
 		QL_CORE_ASSERT(!s_Instance, "Application already exists! ");
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Window::Create(WindowProps(name));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		Renderer::Init();
@@ -118,14 +118,12 @@ namespace Quentlam
 		if (e.GetWidth() == 0 || e.GetHeight() == 0)
 		{
 			m_Minimized = true;
-			QL_CORE_WARN("m_Minimized : {0}", m_Minimized);
 			return false;
 		}
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
 
 
 		m_Minimized = false;
-		QL_CORE_WARN("m_Minimized : {0}", m_Minimized);
 		return false;
 	}
 }

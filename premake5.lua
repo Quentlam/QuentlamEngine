@@ -2,7 +2,7 @@ workspace "QuentlamEngine"
 	architecture "x64"
     characterset "Unicode" 
     buildoptions { "/utf-8" }
-	startproject "Sandbox"
+	startproject "QL-Editor"
 
 	configurations
 	{
@@ -111,6 +111,65 @@ project "QuentlamEngine"
 
 project "Sandbox"
 	location "Sandbox"
+	kind "ConsoleAPP"
+	language "C++"
+	cppdialect "C++17"
+	staticruntime "on"
+
+	targetdir("bin/" ..outputdir.. "/%{prj.name}")
+	objdir("bin-int/" ..outputdir.. "/%{prj.name}")
+
+	files
+	{
+		"%{prj.name}/src/**.h",
+		"%{prj.name}/src/**.cpp",
+
+	}
+
+	includedirs
+	{
+		"QuentlamEngine/vendor/spdlog/include",
+		"QuentlamEngine/src",
+		"QuentlamEngine/vendor",
+		"%{IncludeDir.glm}"
+	}
+
+	links
+	{
+		"QuentlamEngine"
+	}
+
+	filter "system:windows"
+		staticruntime "On"
+		systemversion "latest"
+
+	defines
+	{
+		"QL_PLATFORM_WINDOWS"
+	}
+
+
+	filter "configurations:Debug"
+		defines "QL_DEBUG"
+		runtime "Debug"
+		symbols "on"
+
+	
+	filter "configurations:Release"
+		defines "QL_RELEASE"
+		runtime "Release"
+		optimize "on"
+
+		
+	filter "configurations:Dist"
+		defines "QL_DIST"
+		runtime "Release"
+		optimize "on"
+
+
+
+project "QL-Editor"
+	location "QL-Editor"
 	kind "ConsoleAPP"
 	language "C++"
 	cppdialect "C++17"

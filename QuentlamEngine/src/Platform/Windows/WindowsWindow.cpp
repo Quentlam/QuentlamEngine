@@ -17,9 +17,9 @@ namespace Quentlam
 	}
 
 
-	Window* Window::Create(const WindowProps& props)
+	Scope<Window> Window::Create(const WindowProps& props)
 	{
-		return new WindowsWindow(props);
+		return std::make_unique<WindowsWindow>(props);
 	}
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
@@ -80,7 +80,6 @@ namespace Quentlam
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				QL_CORE_WARN("{0} , {1}",width,height);
 				data.EventCallback(event);//这里相当于执行一个函数。
 
 			});
