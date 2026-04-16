@@ -1,7 +1,7 @@
 #pragma once
 #include "qlpch.h"
 #include "spdlog/spdlog.h"
-#include "Core.h"
+#include "Base.h"
 
 namespace Quentlam
 {

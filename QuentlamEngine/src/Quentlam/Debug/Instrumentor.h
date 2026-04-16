@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Quentlam/Base/Log.h"
+#include "Quentlam/Core/Log.h"
 
 #include <algorithm>
 #include <chrono>

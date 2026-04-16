@@ -19,6 +19,7 @@ IncludeDir["GLFW"] = "QuentlamEngine/vendor/GLFW/include"
 IncludeDir["Glad"] = "QuentlamEngine/vendor/Glad/include"
 IncludeDir["ImGui"] = "QuentlamEngine/vendor/imgui"
 IncludeDir["glm"] = "QuentlamEngine/vendor/glm"
+IncludeDir["entt"] = "QuentlamEngine/vendor/entt/src"
 IncludeDir["stb_image"] = "QuentlamEngine/vendor/stb_image"
 
 include "QuentlamEngine/vendor/GLFW"
@@ -31,7 +32,7 @@ project "QuentlamEngine"
 	location "QuentlamEngine"
 	kind "Staticlib"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir("bin/" ..outputdir.. "/%{prj.name}")
@@ -65,8 +66,8 @@ project "QuentlamEngine"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
-
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.entt}"
 	}
 
 
@@ -113,7 +114,7 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleAPP"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir("bin/" ..outputdir.. "/%{prj.name}")
@@ -131,7 +132,8 @@ project "Sandbox"
 		"QuentlamEngine/vendor/spdlog/include",
 		"QuentlamEngine/src",
 		"QuentlamEngine/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links
@@ -172,7 +174,7 @@ project "QL-Editor"
 	location "QL-Editor"
 	kind "ConsoleAPP"
 	language "C++"
-	cppdialect "C++17"
+	cppdialect "C++20"
 	staticruntime "on"
 
 	targetdir("bin/" ..outputdir.. "/%{prj.name}")
@@ -190,7 +192,8 @@ project "QL-Editor"
 		"QuentlamEngine/vendor/spdlog/include",
 		"QuentlamEngine/src",
 		"QuentlamEngine/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
 	}
 
 	links

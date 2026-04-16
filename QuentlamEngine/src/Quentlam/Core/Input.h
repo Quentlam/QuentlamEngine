@@ -1,8 +1,8 @@
 ﻿#pragma once
 
-#include "Quentlam/Base/Core.h"
-#include "Quentlam/Base/KeyCodes.h"
-#include "Quentlam/Base/MouseButtonCodes.h"
+#include "Quentlam/Core/Base.h"
+#include "Quentlam/Core/KeyCodes.h"
+#include "Quentlam/Core/MouseButtonCodes.h"
 
 namespace Quentlam
 {

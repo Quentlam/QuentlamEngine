@@ -1,6 +1,6 @@
 #include "qlpch.h"
 #include "OpenGLFrameBuffer.h"
-#include "Quentlam/Base/Core.h"
+#include "Quentlam/Core/Base.h"
 
 #include <glad/glad.h>
 

@@ -1,7 +1,7 @@
 #include "qlpch.h"
 #include "OrthographicCameraController.h"
-#include "../Base/Input.h"
-#include "../Base/KeyCodes.h"
+#include "../Core/Input.h"
+#include "../Core/KeyCodes.h"
 
 namespace Quentlam
 {

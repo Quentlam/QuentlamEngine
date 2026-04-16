@@ -1,8 +1,8 @@
 #pragma once
 #include "qlpch.h"
-#include "Quentlam/Base/Core.h"
 #include "Quentlam/Events/Event.h"
-#include "Quentlam/Base/Timestep.h"
+#include "Quentlam/Core/Base.h"
+#include "Quentlam/Core/Timestep.h"
 
 namespace Quentlam
 {
