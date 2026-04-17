@@ -50,7 +50,7 @@ namespace Quentlam
 
 	//glGenVertexArrays(1, &vao);
 	//glBindVertexArray(vao);
-	//glBindBuffer(GL_ARRAY_BUFFER, posVbo);//Ö»ÓÐ°ó¶¨ÁËvbo£¬ÏÂÃæµÄÃèÊö²Å»á¸úÕâ¸övboÏà¹Ø
+	//glBindBuffer(GL_ARRAY_BUFFER, posVbo);//Ö»ï¿½Ð°ï¿½ï¿½ï¿½vboï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å»ï¿½ï¿½ï¿½ï¿½ï¿½vboï¿½ï¿½ï¿½
 	//glEnableVertexAttribArray(0);
 	//glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
@@ -68,12 +68,37 @@ namespace Quentlam
 		for (const auto& element : layout)
 		{
 			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetComponentCount(),
-				ShaderDataTypeToOpenGLBaseType(element.Type),
-				element.Normalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(const void*)element.Offset);
+			switch (element.Type)
+			{
+				case ShaderDataType::Float:
+				case ShaderDataType::Float2:
+				case ShaderDataType::Float3:
+				case ShaderDataType::Float4:
+				case ShaderDataType::Mat3:
+				case ShaderDataType::Mat4:
+				{
+					glVertexAttribPointer(index,
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.Type),
+						element.Normalized ? GL_TRUE : GL_FALSE,
+						layout.GetStride(),
+						(const void*)element.Offset);
+					break;
+				}
+				case ShaderDataType::Int:
+				case ShaderDataType::Int2:
+				case ShaderDataType::Int3:
+				case ShaderDataType::Int4:
+				case ShaderDataType::Bool:
+				{
+					glVertexAttribIPointer(index,
+						element.GetComponentCount(),
+						ShaderDataTypeToOpenGLBaseType(element.Type),
+						layout.GetStride(),
+						(const void*)element.Offset);
+					break;
+				}
+			}
 			index++;
 		}
 		m_VertexBuffers.push_back(vertexBuffer);

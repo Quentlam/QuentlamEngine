@@ -25,20 +25,20 @@ namespace Quentlam
 		Compile(shaderSource);
 
 
-		// ÕâÀï»ñµÃÎÄ¼þÃû×Ö¡£
-		//±ÈÈçÓÐÒ»¸öÎÄ¼þÂ·¾¶Îªassets/shaders/Texture.glsl
-		//ÄÇÃ´ÎÒÃÇÓ¦¸Ã»ñµÃTextureÎªÕâ¸öshaderµÄÃû×Ö
+		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½Ä¼ï¿½Â·ï¿½ï¿½Îªassets/shaders/Texture.glsl
+		//ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½Ó¦ï¿½Ã»ï¿½ï¿½TextureÎªï¿½ï¿½ï¿½shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		auto lastSlash = filepath.find_last_of("/\\");
 		size_t nameStart = (lastSlash == std::string::npos) ? 0 : lastSlash + 1;
 
 		auto dotPos = filepath.rfind('.');
 		size_t count;
 		if (dotPos != std::string::npos && static_cast<size_t>(dotPos) > nameStart) {
-			// dot ÔÚÎÄ¼þÃûÄÚ
+			// dot ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
 			count = static_cast<size_t>(dotPos) - nameStart;
 		}
 		else {
-			// Ã»ÓÐÀ©Õ¹Ãû
+			// Ã»ï¿½ï¿½ï¿½ï¿½Õ¹ï¿½ï¿½
 			count = filepath.size() - nameStart;
 		}
 		m_Name = filepath.substr(nameStart, count);
@@ -66,14 +66,18 @@ namespace Quentlam
 		if (in)
 		{
 			in.seekg(0, std::ios::end);
-			result.resize(in.tellg());
-			in.seekg(0, std::ios::beg);
-			in.read(&result[0], result.size());
+			size_t size = in.tellg();
+			if (size != -1 && size > 0)
+			{
+				result.resize(size);
+				in.seekg(0, std::ios::beg);
+				in.read(&result[0], result.size());
+			}
 			in.close();
 		}
 		else
 		{
-			QL_Base_ERROR("Could not open file '{0}',filepath");
+			QL_CORE_ERROR("Could not open file '{0}'", filepath);
 		}
 
 		return result;
@@ -133,14 +137,14 @@ namespace Quentlam
 				GLint maxLength = 0;
 				glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &maxLength);
 
-				// The maxLength includes the NULL character
-				std::vector<GLchar> infoLog(maxLength);
-				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
+				std::vector<GLchar> infoLog(maxLength > 0 ? maxLength : 1);
+				if (maxLength > 0)
+					glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 
 				// We don't need the shader anymore.
 				glDeleteShader(shader);
 
-				QL_Base_ERROR("{0}", infoLog.data());
+				QL_CORE_ERROR("{0}", infoLog.data());
 				if (type == GL_VERTEX_SHADER)
 				{
 					QL_CORE_ASSERT(false, "Vertex Shader compilation failure!");
@@ -164,9 +168,9 @@ namespace Quentlam
 			GLint maxLength = 0;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
-			// The maxLength includes the NULL character
-			std::vector<GLchar> infoLog(maxLength);
-			glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
+			std::vector<GLchar> infoLog(maxLength > 0 ? maxLength : 1);
+			if (maxLength > 0)
+				glGetProgramInfoLog(program, maxLength, &maxLength, &infoLog[0]);
 
 			// We don't need the program anymore.
 			glDeleteProgram(program);
@@ -175,7 +179,7 @@ namespace Quentlam
 			for (auto id : glShaderIDs)glDeleteShader(id);
 
 
-			QL_Base_ERROR("{0}", infoLog.data());
+			QL_CORE_ERROR("{0}", infoLog.data());
 			QL_CORE_ASSERT(false, "Link program failure!");
 			return;
 		}
@@ -239,6 +243,12 @@ namespace Quentlam
 		QL_PROFILE_FUNCTION();
 
 		UploadUniformFloat(name, value);
+	}
+	void OpenGLShader::SetFloat2(const std::string& name, const glm::vec2& value)
+	{
+		QL_PROFILE_FUNCTION();
+
+		UploadUniformFloat2(name, value);
 	}
 
 	void OpenGLShader::SetFloat3(const std::string& name, const glm::vec3& value)

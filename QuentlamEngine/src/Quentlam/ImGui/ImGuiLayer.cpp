@@ -1,6 +1,6 @@
 #include "qlpch.h"
 #include "ImGuiLayer.h"
-#include "Quentlam/Base/Application.h"
+#include "Quentlam/Core/Application.h"
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
@@ -46,6 +46,16 @@ namespace Quentlam
 		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigViewportsNoAutoMerge = true;
 		//io.ConfigViewportsNoTaskBarIcon = true;
+
+		// Load default font with Chinese support
+		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\msyh.ttc", 18.0f, nullptr, io.Fonts->GetGlyphRangesChineseFull());
+
+		// Load Emoji font as fallback
+		ImFontConfig config;
+		config.MergeMode = true;
+		static const ImWchar icon_ranges[] = { 0x2000, 0x3300, 0x2600, 0x27BF, 0x1F000, 0x1F9FF, 0 };
+		io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\seguiemj.ttf", 18.0f, &config, icon_ranges);
+		io.Fonts->Build();
 
 		// Setup Dear ImGui style
 		ImGui::StyleColorsDark();

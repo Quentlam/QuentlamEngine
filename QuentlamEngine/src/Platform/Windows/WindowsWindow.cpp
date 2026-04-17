@@ -13,7 +13,7 @@ namespace Quentlam
 	static bool s_GLFWInitialized = false;
 	static void GLFWErrorCallback(int error, const char* description)
 	{
-		QL_Base_ERROR("GLFW Error ({0}): {1}", error, description);
+		QL_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
 	}
 
 
@@ -43,7 +43,7 @@ namespace Quentlam
 		m_Data.Height = props.Height;
 
 
-		QL_Base_INFO("Create Window {0} ({1},{2})", props.Title, props.Width, props.Height);
+		QL_CORE_INFO("Create Window {0} ({1},{2})", props.Title, props.Width, props.Height);
 
 
 		if (!s_GLFWInitialized)
@@ -57,6 +57,8 @@ namespace Quentlam
 
 		{
 			QL_PROFILE_SCOPE("glfwCreateWindow");
+			// åœ¨åˆ›å»ºçª—å£å‰è®¾ç½®çª—å£æœ€å¤§åŒ–æç¤º
+			glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
 			++s_Windowscount;
 		}
@@ -80,7 +82,7 @@ namespace Quentlam
 				data.Height = height;
 
 				WindowResizeEvent event(width, height);
-				data.EventCallback(event);//ÕâÀïÏàµ±ÓÚÖ´ĞĞÒ»¸öº¯Êı¡£
+				data.EventCallback(event);//ï¿½ï¿½ï¿½ï¿½ï¿½àµ±ï¿½ï¿½Ö´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 			});
 

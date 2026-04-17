@@ -20,6 +20,7 @@ namespace Quentlam
 		virtual void SetIntArray(const std::string& name, int* value, uint32_t count)= 0;
 
 		virtual void SetFloat(const std::string& name, const float value) = 0;
+		virtual void SetFloat2(const std::string& name, const glm::vec2& value) = 0;
 		virtual void SetFloat3(const std::string& name, const glm::vec3& value) = 0;
 		virtual void SetFloat4(const std::string& name, const glm::vec4& value) = 0;
 		virtual void SetMat4(const std::string& name, const glm::mat4& value) = 0;
@@ -35,15 +36,15 @@ namespace Quentlam
 	class QUENTLAM_API ShaderLibrary
 	{
 	public:
-		void Add(const Ref<Shader>& shader);//Ìí¼ÓÒÑÓÐµÄshader
+		void Add(const Ref<Shader>& shader);//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½shader
 		void Add(const std::string& name, const Ref<Shader>& shader);
-		Ref<Shader> Load(const std::string& filepath);//Ìí¼Óshader£¬Õâ¸ö¹¹Ôì·½·¨³õÊ¼»¯Ê±£¬»á°ÑshaderµÄÃû×Ö×ö³ÉÎÄ¼þÃû×Ö
-		Ref<Shader> Load(const std::string& name,const std::string& filepath);//Ìí¼Óshader£¬Õâ¸ö¹¹Ôì¿ÉÒÔ×Ô¶¨ÒåshaderµÄÃû×Ö
+		Ref<Shader> Load(const std::string& filepath);//ï¿½ï¿½ï¿½ï¿½shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ì·½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
+		Ref<Shader> Load(const std::string& name,const std::string& filepath);//ï¿½ï¿½ï¿½ï¿½shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½shaderï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Ref<Shader> Get(const std::string& name);
 
 		bool Exist(const std::string& name) const;
 	private:
-		std::unordered_map<std::string, Ref<Shader>> m_Shaders;//Èç¹ûÔÚsandboxÖÐ²»´´½¨Ò»¸öShaderLibraryÊµÀý£¬ÄÇÃ´Õâ¸ö±íÖ±½Ó¿ÕµÄ
+		std::unordered_map<std::string, Ref<Shader>> m_Shaders;//ï¿½ï¿½ï¿½ï¿½ï¿½sandboxï¿½Ð²ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ShaderLibraryÊµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½ï¿½ï¿½Ö±ï¿½Ó¿Õµï¿½
 
 	};
 }

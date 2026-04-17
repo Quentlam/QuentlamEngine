@@ -1,26 +1,32 @@
 #pragma once
 
 //For use by Quentlam applications
-#include "Quentlam/Base/Application.h"
-#include "Quentlam/Base/Layer.h"
-#include "Quentlam/Base/Log.h"
+#include "Quentlam/Core/Application.h"
+#include "Quentlam/Core/Layer.h"
+#include "Quentlam/Core/Log.h"
 
-#include "Quentlam/Base/Timestep.h"
+#include "Quentlam/Core/Timestep.h"
 
 
-#include "Quentlam/Base/Input.h"
-#include "Quentlam/Base/KeyCodes.h"
-#include "Quentlam/Base/MouseButtonCodes.h"
+#include "Quentlam/Core/Input.h"
+#include "Quentlam/Core/KeyCodes.h"
+#include "Quentlam/Core/MouseButtonCodes.h"
 #include "Quentlam/Renderer/OrthographicCameraController.h"
+#include "Quentlam/Renderer/PerspectiveCameraController.h"
 
 
 #include "Quentlam/ImGui/ImGuiLayer.h"
+
+#include "Quentlam/Scene/Scene.h"
+#include "Quentlam/Scene/Entity.h"
+#include "Quentlam/Scene/Components.h"
 
 
 //----------Renderer--------------------------
 
 #include "Quentlam/Renderer/Renderer.h"
 #include "Quentlam/Renderer/Renderer2D.h"
+#include "Quentlam/Renderer/Renderer3D.h"
 #include "Quentlam/Renderer/RenderCommand.h"
 
 
@@ -32,4 +38,7 @@
 #include "Quentlam/Renderer/VertexArray.h"
 
 #include "Quentlam/Renderer/OrthographicCamera.h"
+#include "Quentlam/Renderer/PerspectiveCamera.h"
+#include "Quentlam/Renderer/Model.h"
+#include "Quentlam/Renderer/Mesh.h"
 
