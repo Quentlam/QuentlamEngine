@@ -196,13 +196,17 @@ void Player::OnRender()
 	{
 		glm::vec2 pos = GetPosition();
 		float rot = GetRotation();
-		float rotDegrees = glm::degrees(rot);
 
 		// Calculate world space offset by rotating local offset
 		glm::vec4 rotatedOffset = glm::rotate(glm::mat4(1.0f), rot, {0.0f, 0.0f, 1.0f}) * glm::vec4(m_VisualOffset, 0.0f, 1.0f);
 		glm::vec3 finalPos = { pos.x + rotatedOffset.x, pos.y + rotatedOffset.y, 0.5f };
 
-		Quentlam::Renderer2D::DrawRotatedQuad(finalPos, m_VisualScale, m_ShipTexture, rotDegrees);
+		// Construct Transform Matrix for DrawSprite
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), finalPos)
+							* glm::rotate(glm::mat4(1.0f), rot, glm::vec3(0.0f, 0.0f, 1.0f))
+							* glm::scale(glm::mat4(1.0f), glm::vec3(m_VisualScale.x, m_VisualScale.y, 1.0f));
+
+		Quentlam::Renderer2D::DrawSprite(transform, m_ShipTexture, 1.0f, glm::vec4(1.0f));
 	}
 }
 

@@ -552,6 +552,11 @@ namespace Quentlam
 		DrawQuad(transform, src.Color, entityID);
 	}
 
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColor, int entityID)
+	{
+		DrawQuad(transform, texture, tilingFactor, tintColor, entityID);
+	}
+
 	void Renderer2D::ResetStats()
 	{
 		memset(&s_Data.Stats, 0, sizeof(Statistics));
