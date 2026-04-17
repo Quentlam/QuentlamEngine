@@ -24,10 +24,12 @@ namespace Quentlam
 	class QUENTLAM_API Texture2D : public Texture
 	{
 	public:
+		static Ref<Texture2D> Create(); // Create empty, uninitialized
 		static Ref<Texture2D> Create(const std::string& path);
 		static Ref<Texture2D> Create(uint32_t width,uint32_t height);
-
-
+		
+		// For Async loading
+		virtual void LoadFromData(void* data, int width, int height, int channels) = 0;
 	};
 
 

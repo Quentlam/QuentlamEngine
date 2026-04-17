@@ -31,7 +31,7 @@ namespace Quentlam
 #define QL_CORE_INFO(...)    ::Quentlam::Log::GetBaseLogger()->info(__VA_ARGS__)
 #define QL_CORE_WARN(...)    ::Quentlam::Log::GetBaseLogger()->warn(__VA_ARGS__)
 #define QL_CORE_ERROR(...)   ::Quentlam::Log::GetBaseLogger()->error(__VA_ARGS__)
-#define QL_CORE_FATAL(...)   ::Quentlam::Log::GetBaseLogger()->fatal(__VA_ARGS__)
+#define QL_CORE_FATAL(...)   ::Quentlam::Log::GetBaseLogger()->critical(__VA_ARGS__)
 
 
 //Client Logger macros
@@ -39,4 +39,4 @@ namespace Quentlam
 #define QL_INFO(...)    ::Quentlam::Log::GetClientLogger()->info(__VA_ARGS__)
 #define QL_WARN(...)    ::Quentlam::Log::GetClientLogger()->warn(__VA_ARGS__)
 #define QL_ERROR(...)   ::Quentlam::Log::GetClientLogger()->error(__VA_ARGS__)
-#define QL_FATAL(...)   ::Quentlam::Log::GetClientLogger()->fatal(__VA_ARGS__)
+#define QL_FATAL(...)   ::Quentlam::Log::GetClientLogger()->critical(__VA_ARGS__)

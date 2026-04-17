@@ -17,9 +17,12 @@ namespace Quentlam {
 	public:
 		Mesh(const std::vector<Vertex>& vertices, const std::vector<uint32_t>& indices);
 
+		void InitGPU();
 		void Draw() const;
 
 	private:
+		std::vector<Vertex> m_Vertices;
+		std::vector<uint32_t> m_Indices;
 		Ref<VertexArray> m_VertexArray;
 	};
 }

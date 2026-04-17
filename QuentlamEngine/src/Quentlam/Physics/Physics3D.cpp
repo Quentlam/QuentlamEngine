@@ -29,6 +29,7 @@ namespace Quentlam {
 
 	struct PhysicsData;
 	static PhysicsData* s_Data = nullptr;
+	static Scene* s_RuntimeScene = nullptr;
 
 	namespace
 	{
@@ -61,6 +62,18 @@ namespace Quentlam {
 			JPH_ASSERT(inLayer < Layers::NUM_LAYERS);
 			return mObjectToBroadPhase[inLayer];
 		}
+
+#if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
+		virtual const char* GetBroadPhaseLayerName(BroadPhaseLayer inLayer) const override
+		{
+			switch ((BroadPhaseLayer::Type)inLayer)
+			{
+			case (BroadPhaseLayer::Type)0: return "NON_MOVING";
+			case (BroadPhaseLayer::Type)1: return "MOVING";
+			default: JPH_ASSERT(false); return "INVALID";
+			}
+		}
+#endif
 
 	private:
 		BroadPhaseLayer mObjectToBroadPhase[Layers::NUM_LAYERS];
@@ -150,6 +163,12 @@ namespace Quentlam {
 
 	void Physics3D::Shutdown()
 	{
+		if (s_Data)
+			OnRuntimeStop(s_RuntimeScene);
+
+		if (!Factory::sInstance)
+			return;
+
 		UnregisterTypes();
 		delete Factory::sInstance;
 		Factory::sInstance = nullptr;
@@ -166,15 +185,18 @@ namespace Quentlam {
 		if (!Factory::sInstance)
 			Init();
 
-		if (s_Data)
+		if (s_Data && s_RuntimeScene == scene)
 		{
-			// Physics system is already running
 			return true;
 		}
+
+		if (s_Data)
+			OnRuntimeStop(s_RuntimeScene ? s_RuntimeScene : scene);
 
 		ResetRuntimeBodyIds(scene);
 
 		s_Data = new PhysicsData();
+		s_RuntimeScene = scene;
 		s_Data->tempAllocator = new TempAllocatorImpl(10 * 1024 * 1024);
 		uint32_t workerThreads = std::max(1u, thread::hardware_concurrency());
 		s_Data->jobSystem = new JobSystemThreadPool(cMaxPhysicsJobs, cMaxPhysicsBarriers, workerThreads);
@@ -282,10 +304,23 @@ namespace Quentlam {
 
 	void Physics3D::OnRuntimeStop(Scene* scene)
 	{
-		if (!s_Data) return;
+		Scene* sceneToReset = scene ? scene : s_RuntimeScene;
+		if (!s_Data)
+		{
+			ResetRuntimeBodyIds(sceneToReset);
+			s_RuntimeScene = nullptr;
+			return;
+		}
+
+		if (!sceneToReset)
+		{
+			DestroyPhysicsData();
+			s_RuntimeScene = nullptr;
+			return;
+		}
 
 		BodyInterface& bodyInterface = s_Data->physicsSystem->GetBodyInterface();
-		auto view = scene->GetRegistry().view<Rigidbody3DComponent>();
+		auto view = sceneToReset->GetRegistry().view<Rigidbody3DComponent>();
 		for (auto e : view)
 		{
 			auto& rb3d = view.get<Rigidbody3DComponent>(e);
@@ -299,6 +334,8 @@ namespace Quentlam {
 		}
 
 		DestroyPhysicsData();
+		ResetRuntimeBodyIds(sceneToReset);
+		s_RuntimeScene = nullptr;
 	}
 
 	void Physics3D::OnUpdate(Scene* scene, Timestep ts)

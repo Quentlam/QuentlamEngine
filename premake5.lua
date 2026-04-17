@@ -30,6 +30,7 @@ IncludeDir["JoltPhysics"] = "QuentlamEngine/vendor/JoltPhysics"
 include "QuentlamEngine/vendor/GLFW"
 include "QuentlamEngine/vendor/Glad"
 include "QuentlamEngine/vendor/ImGui"
+include "QuentlamEngine/vendor/ImGuizmo"
 
 project "Box2D"
 	location "QuentlamEngine/vendor/Box2D"
@@ -163,6 +164,7 @@ project "QuentlamEngine"
 		"GLFW",
 		"Glad",
 		"ImGui",
+		"ImGuizmo",
 		"Box2D",
 		"JoltPhysics",
 		"opengl32.lib"
@@ -183,6 +185,7 @@ project "QuentlamEngine"
 
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Debug"
 		symbols "on"
 		links { "QuentlamEngine/vendor/assimp/build/lib/Debug/assimp-vc143-mtd.lib", "QuentlamEngine/vendor/assimp/build/contrib/zlib/Debug/zlibstaticd.lib" }
@@ -190,6 +193,7 @@ project "QuentlamEngine"
 	
 	filter "configurations:Release"
 		defines "QL_RELEASE"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Release"
 		optimize "on"
 		links { "QuentlamEngine/vendor/assimp/build/lib/Release/assimp-vc143-mt.lib", "QuentlamEngine/vendor/assimp/build/contrib/zlib/Release/zlibstatic.lib" }
@@ -249,20 +253,22 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Debug"
 		symbols "on"
-
-	
+		
 	filter "configurations:Release"
 		defines "QL_RELEASE"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Release"
 		optimize "on"
-
+		symbols "on"
 		
 	filter "configurations:Dist"
 		defines "QL_DIST"
 		runtime "Release"
 		optimize "on"
+		symbols "on"
 
 
 
@@ -313,18 +319,21 @@ project "QL-Editor"
 
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Debug"
 		symbols "on"
 
-	
 	filter "configurations:Release"
 		defines "QL_RELEASE"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Release"
 		optimize "on"
+		symbols "on"
 
 		
 	filter "configurations:Dist"
 		defines "QL_DIST"
 		runtime "Release"
 		optimize "on"
+		symbols "on"
 

@@ -2,6 +2,7 @@
 #include "EditorLayer.h"
 #include "EditorToolbarLayout.h"
 #include "Quentlam/Events/ApplicationEvent.h"
+#include "Quentlam/Physics/Physics3D.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -28,11 +29,8 @@ namespace Quentlam
 	namespace
 	{
 		constexpr float kToolbarTransitionDurationSeconds = 0.2f;
-		constexpr ImU32 kToolbarStripBackground = IM_COL32(28, 30, 34, 255);
-		constexpr ImU32 kToolbarStripBorder = IM_COL32(56, 59, 66, 255);
 		constexpr ImU32 kToolbarPanelBackground = IM_COL32(45, 48, 54, 255);
 		constexpr ImU32 kToolbarPanelBorder = IM_COL32(78, 82, 90, 255);
-		constexpr ImU32 kToolbarSeparator = IM_COL32(88, 92, 99, 255);
 
 		struct ToolbarButtonTheme
 		{
@@ -322,7 +320,7 @@ namespace Quentlam
 		m_TextureBarrel = SubTexture2D::CreateFromCoords(m_SpriteSheet, { 8,2 }, { 128,128 });
 		m_TextureTree = SubTexture2D::CreateFromCoords(m_SpriteSheet, { 2,1 }, { 128,128 }, { 1,2 });
 
-		m_Model = CreateRef<Model>("assets/models/spider.obj");
+
 
 		m_DirectoryIcon = Texture2D::Create("assets/icons/DirectoryIcon.png");
 		m_FileIcon = Texture2D::Create("assets/icons/FileIcon.png");
@@ -365,14 +363,7 @@ namespace Quentlam
 		auto& bc3d = m_CubeEntity.AddComponent<BoxCollider3DComponent>();
 		bc3d.HalfExtent = glm::vec3(0.4f); // Since scale is 0.8, half extent of 1x1x1 cube is 0.5 * 0.8 = 0.4
 
-		m_ModelEntity = m_ActiveScene->CreateEntity("SpiderModel");
-		auto& modelTc = m_ModelEntity.GetComponent<TransformComponent>();
-		modelTc.Transform = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 5.0f, 0.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.015f));
-		auto& m_rb3d = m_ModelEntity.AddComponent<Rigidbody3DComponent>();
-		m_rb3d.Type = Rigidbody3DComponent::BodyType::Dynamic;
-		m_rb3d.Mass = 5.0f;
-		auto& m_bc3d = m_ModelEntity.AddComponent<BoxCollider3DComponent>();
-		m_bc3d.HalfExtent = glm::vec3(0.75f, 0.5f, 0.75f); // approximate for the model at 0.015 scale
+
 
 		// Add a ground plane so objects don't fall forever
 		Entity plane = m_ActiveScene->CreateEntity("GroundPlane");
@@ -388,6 +379,11 @@ namespace Quentlam
 	void EditorLayer::OnDetach()
 	{
 		QL_PROFILE_FUNCTION();
+
+		if (m_SceneState != SceneState::Edit)
+			OnSceneStop();
+
+		Physics3D::Shutdown();
 
 		if (m_EmptyVAO)
 			glDeleteVertexArrays(1, &m_EmptyVAO);
@@ -501,19 +497,17 @@ namespace Quentlam
 			}
 
 			auto view = m_ActiveScene->GetRegistry().view<TransformComponent, CubeRendererComponent>();
-			for (auto entityID : view)
+			view.each([](auto entityID, auto& tc, auto& cube)
 			{
-				auto [tc, cube] = view.get<TransformComponent, CubeRendererComponent>(entityID);
 				Renderer3D::DrawCube(tc.Transform, cube.Color, (int)(uint32_t)entityID);
-			}
+			});
 			
 			auto primView = m_ActiveScene->GetRegistry().view<TransformComponent, PrimitiveRendererComponent>();
-			for (auto entityID : primView)
+			primView.each([](auto entityID, auto& tc, auto& prim)
 			{
-				auto [tc, prim] = primView.get<TransformComponent, PrimitiveRendererComponent>(entityID);
 				// Render all primitives as cubes for now until mesh generation is implemented
 				Renderer3D::DrawCube(tc.Transform, prim.Color, (int)(uint32_t)entityID);
-			}
+			});
 
 			if (m_Model && m_ModelEntity)
 			{
@@ -533,18 +527,16 @@ namespace Quentlam
 				Renderer3D::DrawCube(tc.Transform, { 0.8f, 0.2f, 0.3f, 1.0f }, (int)(uint32_t)m_CubeEntity);
 			}
 			auto view = m_ActiveScene->GetRegistry().view<TransformComponent, CubeRendererComponent>();
-			for (auto entityID : view)
+			view.each([](auto entityID, auto& tc, auto& cube)
 			{
-				auto [tc, cube] = view.get<TransformComponent, CubeRendererComponent>(entityID);
 				Renderer3D::DrawCube(tc.Transform, cube.Color, (int)(uint32_t)entityID);
-			}
+			});
 
 			auto primView = m_ActiveScene->GetRegistry().view<TransformComponent, PrimitiveRendererComponent>();
-			for (auto entityID : primView)
+			primView.each([](auto entityID, auto& tc, auto& prim)
 			{
-				auto [tc, prim] = primView.get<TransformComponent, PrimitiveRendererComponent>(entityID);
 				Renderer3D::DrawCube(tc.Transform, prim.Color, (int)(uint32_t)entityID);
-			}
+			});
 			Renderer3D::EndScene();
 
 			Renderer2D::BeginScene(m_CameraController.GetCamera());
@@ -652,31 +644,36 @@ namespace Quentlam
 
 	void EditorLayer::UI_Toolbar()
 	{
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		if (!viewport)
+			return;
+
+		const float uiScale = ImGui::GetIO().FontGlobalScale > 0.0f ? ImGui::GetIO().FontGlobalScale : 1.0f;
+		const auto layout = EditorToolbarLayout::Calculate(viewport->WorkSize.x, viewport->WorkPos.y, uiScale, viewport->DpiScale);
+
+		ImGui::SetNextWindowPos(ImVec2(viewport->WorkPos.x + layout.WindowX, layout.WindowY), ImGuiCond_Always);
+		ImGui::SetNextWindowSize(ImVec2(layout.WindowWidth, layout.WindowHeight), ImGuiCond_Always);
+		ImGui::SetNextWindowViewport(viewport->ID);
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
 		ImGui::PushStyleColor(ImGuiCol_WindowBg, ImVec4(0, 0, 0, 0));
 
-		ImGui::Begin("##Toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::Begin("##Toolbar", nullptr,
+			ImGuiWindowFlags_NoDecoration
+			| ImGuiWindowFlags_NoScrollbar
+			| ImGuiWindowFlags_NoScrollWithMouse
+			| ImGuiWindowFlags_NoDocking
+			| ImGuiWindowFlags_NoMove
+			| ImGuiWindowFlags_NoSavedSettings
+			| ImGuiWindowFlags_NoNavFocus
+			| ImGuiWindowFlags_NoNavInputs);
 
 		const bool isPlaying = m_SceneState == SceneState::Play;
 		const bool isPaused = m_SceneState == SceneState::Pause;
-		const int buttonCount = (isPlaying || isPaused) ? 2 : 1;
-		const float uiScale = ImGui::GetIO().FontGlobalScale > 0.0f ? ImGui::GetIO().FontGlobalScale : 1.0f;
-		const float dpiScale = ImGui::GetWindowDpiScale();
-		const float contentWidth = ImGui::GetWindowContentRegionMax().x - ImGui::GetWindowContentRegionMin().x;
-		const auto layout = EditorToolbarLayout::Calculate(contentWidth, ImGui::GetWindowHeight(), buttonCount, uiScale, dpiScale);
 		ImVec2 buttonSize(layout.ButtonSize, layout.ButtonSize);
 		const ImVec2 toolbarPos = ImGui::GetWindowPos();
 		const ImVec2 toolbarSize = ImGui::GetWindowSize();
-		ImDrawList* drawList = ImGui::GetWindowDrawList();
-		drawList->AddRectFilled(toolbarPos, ImVec2(toolbarPos.x + toolbarSize.x, toolbarPos.y + toolbarSize.y), kToolbarStripBackground);
-		drawList->AddLine(ImVec2(toolbarPos.x, toolbarPos.y + toolbarSize.y - 1.0f), ImVec2(toolbarPos.x + toolbarSize.x, toolbarPos.y + toolbarSize.y - 1.0f), kToolbarStripBorder, 1.0f);
-
-		const ImVec2 centerPanelMin(toolbarPos.x + layout.GroupPanelStartX, toolbarPos.y + layout.PanelY);
-		const ImVec2 centerPanelMax(centerPanelMin.x + layout.GroupPanelWidth, centerPanelMin.y + layout.PanelHeight);
-		const ImVec2 addPanelMin(toolbarPos.x + layout.AddPanelStartX, toolbarPos.y + layout.PanelY);
-		const ImVec2 addPanelMax(addPanelMin.x + layout.AddPanelWidth, addPanelMin.y + layout.PanelHeight);
-		DrawToolbarGroupBackground(centerPanelMin, centerPanelMax, layout.CornerRounding);
-		DrawToolbarGroupBackground(addPanelMin, addPanelMax, layout.CornerRounding);
+		DrawToolbarGroupBackground(toolbarPos, ImVec2(toolbarPos.x + toolbarSize.x, toolbarPos.y + toolbarSize.y), layout.CornerRounding);
 
 		if (m_SceneState != m_LastToolbarVisualState)
 		{
@@ -685,71 +682,49 @@ namespace Quentlam
 		}
 		m_ToolbarTransitionProgress = glm::min(m_ToolbarTransitionProgress + (ImGui::GetIO().DeltaTime / kToolbarTransitionDurationSeconds), 1.0f);
 		ImGui::PushStyleVar(ImGuiStyleVar_Alpha, 0.65f + (0.35f * m_ToolbarTransitionProgress));
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(layout.ButtonSpacing, 0.0f));
+		ImGui::SetCursorPos(ImVec2(layout.ButtonX, layout.ButtonY));
 
-		ImGui::SetCursorPos(ImVec2(layout.GroupStartX, layout.PanelY + layout.GroupPaddingY));
+		const char* buttonId = "PlayScenePrimary";
+		const char* fallbackLabel = "Play";
+		const Ref<Texture2D>* icon = &m_IconPlay;
+		const char* tooltip = "播放场景";
 
-		if (isPlaying || isPaused)
+		if (isPlaying)
 		{
-			if (DrawToolbarActionButton("StopScene", "Stop", m_IconStop, buttonSize, layout.IconInset))
-			{
+			buttonId = "StopScenePrimary";
+			fallbackLabel = "Stop";
+			icon = &m_IconStop;
+			tooltip = "停止场景";
+		}
+		else if (isPaused)
+		{
+			buttonId = "ResumeScenePrimary";
+			fallbackLabel = "Play";
+			icon = &m_IconPlay;
+			tooltip = "继续播放";
+		}
+
+		if (DrawToolbarActionButton(buttonId, fallbackLabel, *icon, buttonSize, layout.IconInset, isPlaying))
+		{
+			if (isPlaying)
 				OnSceneStop();
-			}
-			if (ImGui::IsItemHovered())
-				ImGui::SetTooltip("停止场景");
-
-			const float separatorX = centerPanelMin.x + layout.GroupPaddingX + layout.ButtonSize + (layout.ButtonSpacing * 0.5f);
-			drawList->AddLine(ImVec2(separatorX, centerPanelMin.y + layout.GroupPaddingY), ImVec2(separatorX, centerPanelMax.y - layout.GroupPaddingY), kToolbarSeparator, 1.0f);
-
-			ImGui::SameLine(0.0f, layout.ButtonSpacing);
-			if (isPaused)
-			{
-				if (DrawToolbarActionButton("ResumeScene", "Play", m_IconPlay, buttonSize, layout.IconInset, true))
-				{
-					ResumeScenePlay();
-				}
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("继续播放");
-			}
+			else if (isPaused)
+				ResumeScenePlay();
 			else
-			{
-				if (DrawToolbarActionButton("PauseScene", "Pause", m_IconPause, buttonSize, layout.IconInset, true))
-				{
-					OnScenePause();
-				}
-				if (ImGui::IsItemHovered())
-					ImGui::SetTooltip("暂停场景");
-			}
-		}
-		else
-		{
-			if (DrawToolbarActionButton("PlayScene", "Play", m_IconPlay, buttonSize, layout.IconInset, false))
-			{
 				OnScenePlay();
-			}
-			if (ImGui::IsItemHovered())
-			{
-				if (!m_LastPlayFailure.empty())
-					ImGui::SetTooltip("播放失败: %s", m_LastPlayFailure.c_str());
-				else
-					ImGui::SetTooltip("播放场景");
-			}
-		}
-
-		ImGui::SetCursorPos(ImVec2(layout.AddButtonX, layout.PanelY + layout.GroupPaddingY));
-		if (DrawToolbarActionButton("QuickAdd", "Add", m_IconAdd, buttonSize, layout.IconInset))
-		{
-			m_ShowQuickAddPanel = !m_ShowQuickAddPanel;
 		}
 		if (ImGui::IsItemHovered())
 		{
-			ImGui::SetTooltip("快速添加实体 (Ctrl+Shift+A)");
+			if (!m_LastPlayFailure.empty() && !isPlaying && !isPaused)
+				ImGui::SetTooltip("播放失败: %s", m_LastPlayFailure.c_str());
+			else
+				ImGui::SetTooltip("%s", tooltip);
 		}
 
-		ImGui::PopStyleVar(2);
+		ImGui::PopStyleVar();
 		ImGui::End();
 		ImGui::PopStyleColor();
-		ImGui::PopStyleVar();
+		ImGui::PopStyleVar(2);
 	}
 
 	void EditorLayer::OnImGuiLayer()

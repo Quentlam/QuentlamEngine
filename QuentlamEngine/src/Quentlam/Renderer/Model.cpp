@@ -4,7 +4,7 @@
 
 namespace Quentlam {
 
-	Model::Model(const std::string& path)
+	Model::Model(const std::string& path, bool initGPU)
 	{
 		Assimp::Importer importer;
 		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
@@ -17,6 +17,19 @@ namespace Quentlam {
 		m_Directory = path.substr(0, path.find_last_of('/'));
 
 		ProcessNode(scene->mRootNode, scene);
+
+		if (initGPU)
+		{
+			InitGPU();
+		}
+	}
+
+	void Model::InitGPU()
+	{
+		for (auto& mesh : m_Meshes)
+		{
+			mesh.InitGPU();
+		}
 	}
 
 	void Model::Draw() const

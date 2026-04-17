@@ -15,7 +15,7 @@ void Sandbox3D::OnAttach()
 	QL_PROFILE_FUNCTION();
 	m_CheckerboardTexture = Quentlam::Texture2D::Create("assets/texture/1.jpg"); // Use an existing texture
 
-	m_Model = Quentlam::CreateRef<Quentlam::Model>("assets/models/spider.obj");
+
 }
 
 void Sandbox3D::OnDetach()

@@ -10,8 +10,9 @@ namespace Quentlam {
 
 	class QUENTLAM_API Model {
 	public:
-		Model(const std::string& path);
+		Model(const std::string& path, bool initGPU = true);
 
+		void InitGPU(); // Initialize all meshes on main thread
 		void Draw() const;
 
 	private:

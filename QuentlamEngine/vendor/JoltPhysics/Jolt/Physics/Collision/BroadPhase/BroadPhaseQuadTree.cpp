@@ -18,11 +18,13 @@ BroadPhaseQuadTree::~BroadPhaseQuadTree()
 
 void BroadPhaseQuadTree::Init(BodyManager *inBodyManager, const BroadPhaseLayerInterface &inLayerInterface)
 {
+	JPH_ASSERT(&inLayerInterface != nullptr, "inLayerInterface object is null!");
 	BroadPhase::Init(inBodyManager, inLayerInterface);
 
 	// Store input parameters
 	mBroadPhaseLayerInterface = &inLayerInterface;
 	mNumLayers = inLayerInterface.GetNumBroadPhaseLayers();
+	JPH_ASSERT(mNumLayers > 0, "mNumLayers must be greater than 0");
 	JPH_ASSERT(mNumLayers < (BroadPhaseLayer::Type)cBroadPhaseLayerInvalid);
 
 #ifdef JPH_ENABLE_ASSERTS
@@ -46,11 +48,18 @@ void BroadPhaseQuadTree::Init(BodyManager *inBodyManager, const BroadPhaseLayerI
 	mLayers = new QuadTree [mNumLayers];
 	for (uint l = 0; l < mNumLayers; ++l)
 	{
+		JPH_ASSERT(mLayers != nullptr, "mLayers allocation failed");
+		JPH_ASSERT(l >= 0 && l < mNumLayers, "BroadPhaseLayer index out of bounds");
+		
 		mLayers[l].Init(mAllocator);
 
 #if defined(JPH_EXTERNAL_PROFILE) || defined(JPH_PROFILE_ENABLED)
+		// Validate enum bounds before calling
+		JPH_ASSERT((BroadPhaseLayer::Type)l < (BroadPhaseLayer::Type)cBroadPhaseLayerInvalid, "BroadPhaseLayer::Type enum value is out of bounds");
 		// Set the name of the layer
-		mLayers[l].SetName(inLayerInterface.GetBroadPhaseLayerName(BroadPhaseLayer(BroadPhaseLayer::Type(l))));
+		const char* layerName = inLayerInterface.GetBroadPhaseLayerName(BroadPhaseLayer(BroadPhaseLayer::Type(l)));
+		JPH_ASSERT(layerName != nullptr, "GetBroadPhaseLayerName returned a null pointer");
+		mLayers[l].SetName(layerName);
 #endif // JPH_EXTERNAL_PROFILE || JPH_PROFILE_ENABLED
 	}
 }

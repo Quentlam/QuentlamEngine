@@ -11,13 +11,43 @@
 namespace Quentlam {
 
 	static b2World* s_PhysicsWorld = nullptr;
+	static Scene* s_RuntimeScene = nullptr;
+
+	namespace
+	{
+		void ResetRuntimeHandles(Scene* scene)
+		{
+			if (!scene)
+				return;
+
+			auto rigidbodyView = scene->GetRegistry().view<Rigidbody2DComponent>();
+			for (auto e : rigidbodyView)
+				rigidbodyView.get<Rigidbody2DComponent>(e).RuntimeBody = nullptr;
+
+			auto colliderView = scene->GetRegistry().view<BoxCollider2DComponent>();
+			for (auto e : colliderView)
+				colliderView.get<BoxCollider2DComponent>(e).RuntimeFixture = nullptr;
+		}
+	}
 
 	bool Physics2D::OnRuntimeStart(Scene* scene)
 	{
-		if (s_PhysicsWorld)
+		if (!scene)
+		{
+			QL_CORE_ERROR("Physics2D runtime start failed: scene is null.");
+			return false;
+		}
+
+		if (s_PhysicsWorld && s_RuntimeScene == scene)
 			return true;
 
+		if (s_PhysicsWorld)
+			OnRuntimeStop(s_RuntimeScene ? s_RuntimeScene : scene);
+
+		ResetRuntimeHandles(scene);
+
 		s_PhysicsWorld = new b2World({ 0.0f, -9.8f });
+		s_RuntimeScene = scene;
 
 		auto view = scene->GetRegistry().view<Rigidbody2DComponent>();
 		for (auto e : view)
@@ -71,8 +101,12 @@ namespace Quentlam {
 
 	void Physics2D::OnRuntimeStop(Scene* scene)
 	{
+		Scene* sceneToReset = scene ? scene : s_RuntimeScene;
+		ResetRuntimeHandles(sceneToReset);
+
 		delete s_PhysicsWorld;
 		s_PhysicsWorld = nullptr;
+		s_RuntimeScene = nullptr;
 	}
 
 	void Physics2D::OnUpdate(Scene* scene, Timestep ts)

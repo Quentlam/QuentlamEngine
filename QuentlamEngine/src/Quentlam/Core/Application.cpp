@@ -1,8 +1,9 @@
-﻿#include "qlpch.h"
+#include "qlpch.h"
 
 #include "Input.h"
 #include "Application.h"
 #include "../Renderer/Renderer.h"
+#include "Quentlam/Resource/ResourceManager.h"
 
 #include <glfw/glfw3.h>
 
@@ -22,6 +23,7 @@ namespace Quentlam
 		m_Window = Window::Create(WindowProps(name));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
+		ResourceManager::Init();
 		Renderer::Init();
 
 
@@ -33,7 +35,7 @@ namespace Quentlam
 	}
 	Application::~Application()
 	{
-
+		ResourceManager::Shutdown();
 	}
 	void Application::PushLayer(Layer* layer)
 	{
@@ -78,6 +80,7 @@ namespace Quentlam
 			Timestep timestep = time - m_LastFrameTime;
 			m_LastFrameTime = time;
 
+			ResourceManager::Update();
 
 			if (!m_Minimized)
 			{
