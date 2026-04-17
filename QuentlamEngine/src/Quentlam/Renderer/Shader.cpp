@@ -35,7 +35,7 @@ namespace Quentlam
 	{
 		QL_CORE_ASSERT(!Exist(name), "Shader already exists!")
 		m_Shaders[name] = shader;
-		QL_Base_INFO("Load shader : \"{0}\" success", name);
+		QL_CORE_INFO("Load shader : \"{0}\" success", name);
 	}
 
 

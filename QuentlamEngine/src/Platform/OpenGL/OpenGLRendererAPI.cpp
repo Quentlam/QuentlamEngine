@@ -15,7 +15,7 @@ namespace Quentlam
 
 	void OpenGLRendererAPI::Clear()
 	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 	}
 
 	void OpenGLRendererAPI::Init()
@@ -36,9 +36,41 @@ namespace Quentlam
 
 	}
 
+	void OpenGLRendererAPI::SetStencilTest(bool enable)
+	{
+		if (enable)
+			glEnable(GL_STENCIL_TEST);
+		else
+			glDisable(GL_STENCIL_TEST);
+	}
+
+	void OpenGLRendererAPI::SetStencilFunc(uint32_t func, int ref, uint32_t mask)
+	{
+		glStencilFunc(func, ref, mask);
+	}
+
+	void OpenGLRendererAPI::SetStencilOp(uint32_t fail, uint32_t zfail, uint32_t zpass)
+	{
+		glStencilOp(fail, zfail, zpass);
+	}
+
+	void OpenGLRendererAPI::SetStencilMask(uint32_t mask)
+	{
+		glStencilMask(mask);
+	}
+
+	void OpenGLRendererAPI::SetDepthTest(bool enable)
+	{
+		if (enable)
+			glEnable(GL_DEPTH_TEST);
+		else
+			glDisable(GL_DEPTH_TEST);
+	}
+
 	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
-		uint32_t count = indexCount ? vertexArray->GetIndexBuffer()->GetCount() : indexCount;
+		vertexArray->Bind();
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 		//glBindTexture(GL_TEXTURE_2D, 0);
 	}

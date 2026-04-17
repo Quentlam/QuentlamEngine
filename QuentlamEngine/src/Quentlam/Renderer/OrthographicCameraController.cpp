@@ -1,7 +1,7 @@
 #include "qlpch.h"
 #include "OrthographicCameraController.h"
-#include "../Base/Input.h"
-#include "../Base/KeyCodes.h"
+#include "../Core/Input.h"
+#include "../Core/KeyCodes.h"
 
 namespace Quentlam
 {
@@ -11,7 +11,7 @@ namespace Quentlam
 		  m_Camera(-m_AspectRatio * m_ZoomLevel, m_AspectRatio* m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel),
 		  m_Rotation(rotation)
 	{
-		QL_Base_INFO("aspectRatio: {0} ,m_ZoomLevel : {1}", m_AspectRatio, m_ZoomLevel);
+		QL_CORE_INFO("aspectRatio: {0} ,m_ZoomLevel : {1}", m_AspectRatio, m_ZoomLevel);
 	};
 
 	void OrthographicCameraController::OnUpdate(Timestep ts)

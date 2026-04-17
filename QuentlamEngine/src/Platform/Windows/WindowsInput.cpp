@@ -1,10 +1,10 @@
 #include "qlpch.h"
 #include <GLFW/glfw3.h>
 
-#include "Quentlam/Base/KeyCodes.h"
-#include "Quentlam/Base/MouseButtonCodes.h"
-#include "Quentlam/Base/Input.h"
-#include "Quentlam/Base/Application.h"
+#include "Quentlam/Core/KeyCodes.h"
+#include "Quentlam/Core/MouseButtonCodes.h"
+#include "Quentlam/Core/Input.h"
+#include "Quentlam/Core/Application.h"
 
 
 namespace Quentlam

@@ -24,6 +24,12 @@ namespace Quentlam
 		virtual void Init() = 0;
 		virtual void SetViewport(uint32_t x, uint32_t y, uint32_t width, uint32_t height) = 0;
 
+		virtual void SetStencilTest(bool enable) = 0;
+		virtual void SetStencilFunc(uint32_t func, int ref, uint32_t mask) = 0;
+		virtual void SetStencilOp(uint32_t fail, uint32_t zfail, uint32_t zpass) = 0;
+		virtual void SetStencilMask(uint32_t mask) = 0;
+		virtual void SetDepthTest(bool enable) = 0;
+
 
 
 		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray,uint32_t indexCount = 0) = 0;

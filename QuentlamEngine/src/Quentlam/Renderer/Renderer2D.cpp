@@ -5,9 +5,11 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "RenderCommand.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include "Quentlam/Scene/Components.h"
 
 
 namespace Quentlam
@@ -20,6 +22,7 @@ namespace Quentlam
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
+		int EntityID;
 	};
 
 
@@ -63,8 +66,8 @@ namespace Quentlam
 			{ShaderDataType::Float4,"a_Color"},
 			{ ShaderDataType::Float2,"a_TexCoord" },
 			{ ShaderDataType::Float,"a_TexIndex" },
-			{ ShaderDataType::Float,"a_TilingFactor" }
-
+			{ ShaderDataType::Float,"a_TilingFactor" },
+			{ ShaderDataType::Int,"a_EntityID" }
 			});
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
@@ -131,6 +134,18 @@ namespace Quentlam
 
 		s_Data.TextureSlotIndex = 1;
 	}
+	void Renderer2D::BeginScene(const PerspectiveCamera& camera)
+	{
+		QL_PROFILE_FUNCTION();
+
+		s_Data.TextureShader->Bind();
+		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		s_Data.QuadIndexCount = 0;
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TextureSlotIndex = 1;
+	}
 	void Renderer2D::EndScene()
 	{
 		QL_PROFILE_FUNCTION();
@@ -160,64 +175,31 @@ namespace Quentlam
 	}
 
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color, int entityID)
 	{
-		DrawQuad({ position.x,position.y,0.0f }, size, color);
+		DrawQuad({ position.x,position.y,0.0f }, size, color, entityID);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			FlushAndReset();
 
-
 		glm::mat4 transform =
 			glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x,size.y, 1.0f));
 
-		const float textureIndex = 0.0f;
-		const float tilingFactor = 1.0f;
-
-		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
-		constexpr size_t quadVertexCount = 4;
-
-		for (uint32_t i = 0; i < quadVertexCount; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr++;
-		}
-
-		s_Data.QuadIndexCount += 6;
-
-		s_Data.Stats.QuadCount++;
-
-#if OLD_PATH
-
-		s_Data.TextureShader->SetFloat4("u_Color", color);
-		//Bind white texture here
-		s_Data.WhiteTexture->Bind();
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0)); //ƫ�Ƶ����õ�λ��ȥ����������Ϊ���õĴ�С��
-		s_Data.TextureShader->SetMat4("u_Transform", transform);
-
-		s_Data.QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
-
-#endif
+		DrawQuad(transform, color, entityID);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
-		DrawQuad({ position.x,position.y,0.0f }, size, texture, tilingFactor, tinColor);
+		DrawQuad({ position.x,position.y,0.0f }, size, texture, tilingFactor, tinColor, entityID);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
 		constexpr size_t quadVertexCount = 4;
@@ -228,67 +210,20 @@ namespace Quentlam
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			FlushAndReset();
 
-
-		float textureIndex = 0.0f;
-
-		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
-		{
-			if (*s_Data.TextureSlots[i].get() == *texture.get())
-			{
-				textureIndex = (float)i;
-				break;
-			}
-		}
-
-
-		if (textureIndex == 0.0f)
-		{
-			textureIndex = (float)s_Data.TextureSlotIndex;
-			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
-			s_Data.TextureSlotIndex++;
-		}
-
 		glm::mat4 transform =
 			glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), glm::vec3(size.x, size.y, 1.0f));
 
-		for (uint32_t i = 0; i < quadVertexCount; i++)
-		{
-			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
-			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
-			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data.QuadVertexBufferPtr++;
-		}
-
-		s_Data.QuadIndexCount += 6;
-
-		s_Data.Stats.QuadCount++;
-
-
-#if OLD_PATH
-		s_Data.TextureShader->Bind();
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), glm::vec3(size, 1.0)); //ƫ�Ƶ����õ�λ��ȥ����������Ϊ���õĴ�С��
-		s_Data.TextureShader->SetMat4("u_Transform", transform);
-		s_Data.TextureShader->SetFloat4("u_Color", tinColor);
-		s_Data.TextureShader->SetFloat("u_TilingFactor", tilingFactor);
-
-
-		texture->Bind();
-		s_Data.QuadVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray);
-#endif 
-
+		DrawQuad(transform, texture, tilingFactor, tinColor, entityID);
 
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
-		DrawQuad({ position.x,position.y,0.0f }, size, subTexture, tilingFactor, tinColor);
+		DrawQuad({ position.x,position.y,0.0f }, size, subTexture, tilingFactor, tinColor, entityID);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
 		constexpr size_t quadVertexCount = 4;
@@ -331,6 +266,82 @@ namespace Quentlam
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr++;
+		}
+
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.Stats.QuadCount++;
+
+	}
+
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	{
+		QL_PROFILE_FUNCTION();
+
+		const float textureIndex = 0.0f;
+		const float tilingFactor = 1.0f;
+		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
+		constexpr size_t quadVertexCount = 4;
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+			FlushAndReset();
+
+		for (uint32_t i = 0; i < quadVertexCount; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
+			s_Data.QuadVertexBufferPtr++;
+		}
+
+		s_Data.QuadIndexCount += 6;
+
+		s_Data.Stats.QuadCount++;
+
+	}
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
+	{
+		QL_PROFILE_FUNCTION();
+		constexpr size_t quadVertexCount = 4;
+		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
+		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
+
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+			FlushAndReset();
+
+		float textureIndex = 0.0f;
+
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+
+		for (uint32_t i = 0; i < quadVertexCount; i++)
+		{
+			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
+			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -342,12 +353,12 @@ namespace Quentlam
 
 
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float rotation, const glm::vec4& color)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const float rotation, const glm::vec4& color, int entityID)
 	{
-		DrawRotatedQuad({ position.x, position.y , 0.0f}, size, rotation, color);
+		DrawRotatedQuad({ position.x, position.y , 0.0f}, size, rotation, color, entityID);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotation, const glm::vec4& color)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const float rotation, const glm::vec4& color, int entityID)
 	{
 
 		QL_PROFILE_FUNCTION();
@@ -374,6 +385,7 @@ namespace Quentlam
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -401,12 +413,12 @@ namespace Quentlam
 	}
 
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float rotation, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float rotation, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
-		DrawRotatedQuad({ position.x, position.y , 0.0f }, size, texture, rotation, tilingFactor, tinColor);
+		DrawRotatedQuad({ position.x, position.y , 0.0f }, size, texture, rotation, tilingFactor, tinColor, entityID);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float rotation, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, const float rotation, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
 
@@ -448,6 +460,7 @@ namespace Quentlam
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -474,12 +487,12 @@ namespace Quentlam
 
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float rotation, const float tilingFactor, const glm::vec4& tinColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float rotation, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
-		DrawRotatedQuad({ position.x, position.y , 0.0f }, size, subTexture, rotation, tilingFactor, tinColor);
+		DrawRotatedQuad({ position.x, position.y , 0.0f }, size, subTexture, rotation, tilingFactor, tinColor, entityID);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float rotation, const float tilingFactor, const glm::vec4& tintColor)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subTexture, const float rotation, const float tilingFactor, const glm::vec4& tintColor, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
 
@@ -524,6 +537,7 @@ namespace Quentlam
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.QuadVertexBufferPtr->EntityID = entityID;
 			s_Data.QuadVertexBufferPtr++;
 		}
 
@@ -531,6 +545,11 @@ namespace Quentlam
 
 		s_Data.Stats.QuadCount++;
 
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteTransformComponent& src, int entityID)
+	{
+		DrawQuad(transform, src.Color, entityID);
 	}
 
 	void Renderer2D::ResetStats()

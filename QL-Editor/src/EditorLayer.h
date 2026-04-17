@@ -1,43 +1,111 @@
 #pragma once
 
-#include "Quentlam/Base/Layer.h"
+#include "Quentlam/Core/Layer.h"
 #include "Platform/OpenGL/OpenGLShader.h"
+#include "Quentlam/Renderer/PerspectiveCamera.h"
+#include "Quentlam/Renderer/PerspectiveCameraController.h"
+#include "Quentlam/Renderer/Model.h"
 
 
-
-class EditorLayer : public Quentlam::Layer
+namespace Quentlam
 {
-public:
-	EditorLayer();
-	~EditorLayer() = default;
-    void OnAttach() override;
-    void OnDetach() override;
-	void OnEvent(Quentlam::Event& event) override;
-	void OnUpdate(Quentlam::Timestep ts) override;
-	void OnImGuiLayer() override;
+
+	enum class SceneState
+	{
+		Edit = 0, Play = 1, Pause = 2
+	};
+
+	class EditorLayer : public Layer
+	{
+	public:
+		EditorLayer();
+		~EditorLayer() = default;
+		void OnAttach() override;
+		void OnDetach() override;
+		void OnEvent(Event& event) override;
+		void OnUpdate(Timestep ts) override;
+		void OnImGuiLayer() override;
 
 
 
-private:
-	Quentlam::OrthographicCameraController  m_CameraController;
+		void OnOverlayRender();
+		void UI_Toolbar();
 
-	//Temp
-	Quentlam::Ref<Quentlam::Texture2D>		m_Texture2D;
-	Quentlam::Ref<Quentlam::Texture2D>		m_CheckerboardTexture;
-	Quentlam::Ref<Quentlam::Texture2D>		m_SpriteSheet;
-	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureStairs;
-	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureBarrel;
-	Quentlam::Ref<Quentlam::SubTexture2D>	m_TextureTree;
+	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+		
+		void OnScenePlay();
+		void OnSceneStop();
+		void OnScenePause();
+		void ResumeScenePlay();
 
-	Quentlam::Ref<Quentlam::FrameBuffer>	m_Framebuffer;
-	glm::vec2 m_ViewportSize{ 0.0f,0.0f };
+		OrthographicCameraController  m_CameraController;
+		PerspectiveCameraController   m_PerspCameraController;
+		bool m_Is3DCamera = false;
 
-	bool m_ViewportFocused = false, m_ViewportHovered = false;
+		//Temp
+		Ref<Texture2D>		m_Texture2D;
+		Ref<Texture2D>		m_CheckerboardTexture;
+		Ref<Texture2D>		m_SpriteSheet;
+		Ref<SubTexture2D>	m_TextureStairs;
+		Ref<SubTexture2D>	m_TextureBarrel;
+		Ref<SubTexture2D>	m_TextureTree;
 
-	Quentlam::Ref<Quentlam::VertexArray>	m_VertexArray;
-	Quentlam::Ref<Quentlam::Shader>         m_FlatColorShader;
+		Ref<FrameBuffer>	m_Framebuffer;
+		glm::vec2 m_ViewportSize{ 0.0f,0.0f };
 
-	glm::vec4 m_Square_Color{ 0.3f, 0.3f, 0.8f,1.0f };
+		bool m_ViewportFocused = false, m_ViewportHovered = false;
 
-};
+		Ref<VertexArray>	m_VertexArray;
+		Ref<Shader>         m_FlatColorShader;
 
+		Entity m_SquareEntity;
+		Entity m_CubeEntity;
+		Entity m_ModelEntity;
+
+
+		Ref<Scene>	m_ActiveScene;
+
+		glm::vec4 m_Square_Color{ 0.3f, 0.3f, 0.8f,1.0f };
+
+		Entity m_SelectedEntity;
+		Entity m_HoveredEntity;
+		glm::vec2 m_ViewportBounds[2];
+
+		int m_GizmoType = -1; // -1 = None, 0 = Translate, 1 = Rotate, 2 = Scale
+
+		bool m_IsContentBrowserOpen = true;
+		std::string m_CurrentDirectory = "assets";
+		Ref<Texture2D> m_DirectoryIcon;
+		Ref<Texture2D> m_FileIcon;
+		Ref<Texture2D> m_IconFBX;
+		Ref<Texture2D> m_IconPNG;
+		Ref<Texture2D> m_IconWAV;
+		Ref<Texture2D> m_IconUASSET;
+		Ref<Texture2D> m_IconUMAP;
+
+		Ref<Model> m_Model;
+
+		Ref<Shader> m_OutlineShader;
+		uint32_t m_EmptyVAO = 0;
+
+		SceneState m_SceneState = SceneState::Edit;
+		Ref<Texture2D> m_IconPlay;
+		Ref<Texture2D> m_IconPause;
+		Ref<Texture2D> m_IconStop;
+		Ref<Texture2D> m_IconAdd;
+		bool m_bIsPaused = false;
+		bool m_IsSceneTransitioning = false;
+		bool m_ShowQuickAddPanel = false;
+		char m_QuickAddSearchBuffer[128] = "";
+		SceneState m_LastToolbarVisualState = SceneState::Edit;
+		float m_ToolbarTransitionProgress = 1.0f;
+		std::string m_LastPlayFailure;
+
+		// Editor outline properties
+		glm::vec4 m_OutlineColor = { 1.0f, 0.5f, 0.0f, 1.0f };
+		int m_OutlineWidth = 3;
+		float m_OutlineIntensity = 1.0f;
+	};
+
+}

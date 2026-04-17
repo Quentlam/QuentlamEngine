@@ -6,6 +6,20 @@
 *.db
 *.opensdf
 *.sdf
-毕业论文.md
+姣曚笟璁烘枃.md
 bin/
 bin-int/
+
+# Large test assets and models
+*/assets/models/bag/
+*.fbx
+*.obj
+*.mtl
+*/assets/models/**/*.jpg
+*/assets/models/**/*.png
+
+# Large vendor binaries and docs
+QuentlamEngine/vendor/JoltPhysics/Assets/
+QuentlamEngine/vendor/JoltPhysics/Docs/
+QuentlamEngine/vendor/JoltPhysics/Web/
+QuentlamEngine/vendor/glm/doc/
