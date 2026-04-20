@@ -1,3 +1,4 @@
+#include "qlpch.h"
 #include <Quentlam.h>
 //----------Entry Point --------------------------
 #include <Quentlam/Core/EntryPoint.h>

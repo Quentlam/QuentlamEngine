@@ -41,15 +41,49 @@ void Sandbox3D::OnUpdate(Quentlam::Timestep ts)
 
 	Quentlam::Renderer3D::BeginScene(m_CameraController.GetCamera());
 
-	// Draw some cubes
-	Quentlam::Renderer3D::DrawCube(glm::vec3(-1.0f, 0.0f, 0.0f), glm::vec3(0.8f), { 0.8f, 0.2f, 0.3f, 1.0f });
-	Quentlam::Renderer3D::DrawCube(glm::vec3( 1.0f, 0.0f, 0.0f), glm::vec3(0.5f), m_CubeColor);
+	static float time = 0.0f;
+	time += ts;
 
-	// Draw imported model
+	// 1. Draw floor
+	glm::mat4 floorTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.5f, 0.0f))
+		* glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 0.1f, 20.0f));
+	Quentlam::Renderer3D::DrawCube(floorTransform, m_CheckerboardTexture, 10.0f);
+
+	// 2. Draw central floating/rotating cube
+	glm::mat4 centralTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.5f + glm::sin(time) * 0.5f, 0.0f))
+		* glm::rotate(glm::mat4(1.0f), time, glm::vec3(1.0f, 1.0f, 0.0f))
+		* glm::scale(glm::mat4(1.0f), glm::vec3(1.5f));
+	Quentlam::Renderer3D::DrawCube(centralTransform, m_CubeColor);
+
+	// 3. Draw a beautiful spiral of orbiting cubes
+	for (int i = 0; i < 60; i++)
+	{
+		float offset = i * 0.15f;
+		float angle = time * 1.5f + offset * 3.14159f;
+		float radius = 2.0f + offset * 0.1f;
+		float y = 0.0f + offset * 0.15f + glm::sin(time + offset) * 0.5f;
+		
+		glm::vec3 pos(glm::cos(angle) * radius, y, glm::sin(angle) * radius);
+		
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos)
+			* glm::rotate(glm::mat4(1.0f), time * 3.0f + offset, glm::vec3(0.5f, 1.0f, 0.2f))
+			* glm::scale(glm::mat4(1.0f), glm::vec3(0.4f - (i * 0.005f))); // gradually get smaller
+
+		glm::vec4 color(
+			(glm::sin(offset + time * 1.0f) + 1.0f) * 0.5f,
+			(glm::cos(offset + time * 1.2f) + 1.0f) * 0.5f,
+			(glm::sin(offset + time * 0.8f) + 1.0f) * 0.5f,
+			1.0f
+		);
+
+		Quentlam::Renderer3D::DrawCube(transform, color);
+	}
+
+	// 4. Draw imported model if loaded
 	if (m_Model)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.5f, -2.0f)) 
-			* glm::scale(glm::mat4(1.0f), glm::vec3(0.05f)); // Scale down the spider model as it might be large
+			* glm::scale(glm::mat4(1.0f), glm::vec3(0.05f));
 		Quentlam::Renderer3D::DrawModel(transform, *m_Model);
 	}
 

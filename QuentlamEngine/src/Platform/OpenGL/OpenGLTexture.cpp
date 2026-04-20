@@ -19,7 +19,7 @@ namespace Quentlam
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -33,11 +33,46 @@ namespace Quentlam
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
 		stbi_uc* data = nullptr;
+		std::string actualPath = path;
 		{
 			QL_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
-			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+			data = stbi_load(actualPath.c_str(), &width, &height, &channels, 0);
+			if (!data)
+			{
+				actualPath = "ParkourGame/" + path;
+				data = stbi_load(actualPath.c_str(), &width, &height, &channels, 0);
+			}
+			if (!data)
+			{
+				actualPath = "../ParkourGame/" + path;
+				data = stbi_load(actualPath.c_str(), &width, &height, &channels, 0);
+			}
 		}
-		QL_CORE_ASSERT(data, "Failed to load image");
+		
+		if (!data)
+		{
+			QL_CORE_ERROR("Failed to load image: {0}", path);
+			// Fallback texture (1x1 magenta)
+			m_Width = 1;
+			m_Height = 1;
+			m_InternalFormat = GL_RGBA8;
+			m_DataFormat = GL_RGBA;
+
+			glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
+			glTextureStorage2D(m_RendererID, 1, m_InternalFormat, m_Width, m_Height);
+
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+			uint32_t fallbackData = 0xff00ffff; // ABGR -> magenta
+			glTextureSubImage2D(m_RendererID, 0, 0, 0, m_Width, m_Height, m_DataFormat, GL_UNSIGNED_BYTE, &fallbackData);
+			return;
+		}
+
+		QL_CORE_INFO("Successfully loaded image: {0} ({1}x{2} channels: {3})", actualPath, width, height, channels);
+
 		m_Width = width;
 		m_Height = height;
 
@@ -60,7 +95,7 @@ namespace Quentlam
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -98,7 +133,7 @@ namespace Quentlam
 		glCreateTextures(GL_TEXTURE_2D, 1, &m_RendererID);
 		glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 
-		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTextureParameteri(m_RendererID, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTextureParameteri(m_RendererID, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 		glTextureParameteri(m_RendererID, GL_TEXTURE_WRAP_S, GL_REPEAT);

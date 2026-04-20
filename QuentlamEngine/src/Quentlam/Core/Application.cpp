@@ -14,13 +14,13 @@ namespace Quentlam
 	Application* Application::s_Instance = nullptr;
 
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string& name, uint32_t width, uint32_t height)
 	{
 		QL_PROFILE_FUNCTION();
-		
-		QL_CORE_ASSERT(!s_Instance, "Application already exists! ");
+		QL_CORE_ASSERT(!s_Instance, "Application is Already Exist!");
 		s_Instance = this;
-		m_Window = Window::Create(WindowProps(name));
+
+		m_Window = Window::Create(WindowProps(name, width, height));
 		m_Window->SetEventCallback(BIND_EVENT_FN(Application::OnEvent));
 
 		ResourceManager::Init();

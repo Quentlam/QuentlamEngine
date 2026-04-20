@@ -1,7 +1,7 @@
 workspace "QuentlamEngine"
 	architecture "x64"
-    characterset "Unicode" 
-    buildoptions { "/utf-8" }
+	characterset "Unicode"
+	buildoptions { "/utf-8" }
 	startproject "QL-Editor"
 
 	configurations
@@ -10,9 +10,8 @@ workspace "QuentlamEngine"
 		"Release",
 		"Dist"
 	}
-	
-outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
+outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["GLFW"] = "QuentlamEngine/vendor/GLFW/include"
@@ -26,6 +25,19 @@ IncludeDir["assimp"] = "QuentlamEngine/vendor/assimp/include"
 IncludeDir["assimp_build"] = "QuentlamEngine/vendor/assimp/build/include"
 IncludeDir["Box2D"] = "QuentlamEngine/vendor/Box2D/include"
 IncludeDir["JoltPhysics"] = "QuentlamEngine/vendor/JoltPhysics"
+
+CoreProjectIncludeDirs =
+{
+	"%{IncludeDir.entt}",
+	"%{IncludeDir.assimp}",
+	"%{IncludeDir.assimp_build}",
+	"%{IncludeDir.ImGuizmo}"
+}
+
+CoreProjectDefines =
+{
+	"ENTT_INCLUDE_NATVIS"
+}
 
 include "QuentlamEngine/vendor/GLFW"
 include "QuentlamEngine/vendor/Glad"
@@ -59,10 +71,10 @@ project "Box2D"
 
 	filter "configurations:Debug"
 		runtime "Debug"
-		
+
 	filter "configurations:Release"
 		runtime "Release"
-		
+
 	filter "configurations:Dist"
 		runtime "Release"
 
@@ -87,7 +99,7 @@ project "JoltPhysics"
 	{
 		"QuentlamEngine/vendor/JoltPhysics"
 	}
-	
+
 	defines
 	{
 		"JPH_PROFILE_ENABLED",
@@ -96,20 +108,18 @@ project "JoltPhysics"
 
 	filter "system:windows"
 		systemversion "latest"
-		
+
 	filter "configurations:Debug"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Debug"
-		
+
 	filter "configurations:Release"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Release"
-		
+
 	filter "configurations:Dist"
 		defines {}
 		runtime "Release"
-
-	
 
 project "QuentlamEngine"
 	location "QuentlamEngine"
@@ -123,6 +133,7 @@ project "QuentlamEngine"
 
 	pchheader "qlpch.h"
 	pchsource "QuentlamEngine/src/qlpch.cpp"
+	forceincludes "qlpch.h"
 
 	files
 	{
@@ -132,14 +143,12 @@ project "QuentlamEngine"
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb_image/**.h",
 		"%{prj.name}/vendor/stb_image/**.cpp"
-
 	}
 
 	defines
 	{
 		"_CRT_SECURE_NO_WARNINGS"
 	}
-	
 
 	includedirs
 	{
@@ -157,7 +166,6 @@ project "QuentlamEngine"
 		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.JoltPhysics}"
 	}
-
 
 	links
 	{
@@ -182,7 +190,6 @@ project "QuentlamEngine"
 			"GLFW_INCLUDE_NONE"
 		}
 
-
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
@@ -190,7 +197,6 @@ project "QuentlamEngine"
 		symbols "on"
 		links { "QuentlamEngine/vendor/assimp/build/lib/Debug/assimp-vc143-mtd.lib", "QuentlamEngine/vendor/assimp/build/contrib/zlib/Debug/zlibstaticd.lib" }
 
-	
 	filter "configurations:Release"
 		defines "QL_RELEASE"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
@@ -198,13 +204,11 @@ project "QuentlamEngine"
 		optimize "on"
 		links { "QuentlamEngine/vendor/assimp/build/lib/Release/assimp-vc143-mt.lib", "QuentlamEngine/vendor/assimp/build/contrib/zlib/Release/zlibstatic.lib" }
 
-		
 	filter "configurations:Dist"
 		defines "QL_DIST"
 		runtime "Release"
 		optimize "on"
 		links { "QuentlamEngine/vendor/assimp/build/lib/Release/assimp-vc143-mt.lib", "QuentlamEngine/vendor/assimp/build/contrib/zlib/Release/zlibstatic.lib" }
-
 
 project "Sandbox"
 	location "Sandbox"
@@ -212,15 +216,21 @@ project "Sandbox"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "on"
+	debugdir "Sandbox"
 
 	targetdir("bin/" ..outputdir.. "/%{prj.name}")
 	objdir("bin-int/" ..outputdir.. "/%{prj.name}")
 
+	pchheader "qlpch.h"
+	pchsource "QuentlamEngine/src/qlpch.cpp"
+	forceincludes "qlpch.h"
+
 	files
 	{
+		"QuentlamEngine/src/qlpch.h",
+		"QuentlamEngine/src/qlpch.cpp",
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-
 	}
 
 	includedirs
@@ -229,11 +239,17 @@ project "Sandbox"
 		"QuentlamEngine/src",
 		"QuentlamEngine/vendor",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.Glad}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
-		"%{IncludeDir.Glad}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.assimp_build}"
+		"%{IncludeDir.assimp_build}",
+	}
+
+	externalincludedirs
+	{
+		table.unpack(CoreProjectIncludeDirs)
 	}
 
 	links
@@ -247,30 +263,108 @@ project "Sandbox"
 
 	defines
 	{
-		"QL_PLATFORM_WINDOWS"
+		"QL_PLATFORM_WINDOWS",
+		table.unpack(CoreProjectDefines)
 	}
-
 
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Debug"
 		symbols "on"
-		
+
 	filter "configurations:Release"
 		defines "QL_RELEASE"
 		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
 		runtime "Release"
 		optimize "on"
 		symbols "on"
-		
+
 	filter "configurations:Dist"
 		defines "QL_DIST"
 		runtime "Release"
 		optimize "on"
 		symbols "on"
 
+project "ParkourGame"
+	location "ParkourGame"
+	kind "ConsoleAPP"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+	debugdir "ParkourGame"
 
+	targetdir("bin/" ..outputdir.. "/%{prj.name}")
+	objdir("bin-int/" ..outputdir.. "/%{prj.name}")
+
+	pchheader "qlpch.h"
+	pchsource "QuentlamEngine/src/qlpch.cpp"
+	forceincludes "qlpch.h"
+
+	files
+	{
+		"QuentlamEngine/src/qlpch.h",
+		"QuentlamEngine/src/qlpch.cpp",
+		"ParkourGame/src/**.h",
+		"ParkourGame/src/**.cpp",
+		"QL-Editor/src/EditorToolbarLayout.h",
+	}
+
+	includedirs
+	{
+		"QuentlamEngine/vendor/spdlog/include",
+		"QuentlamEngine/src",
+		"QuentlamEngine/vendor",
+		"QuentlamEngine/vendor/JoltPhysics",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.assimp_build}",
+		"QL-Editor/src"
+	}
+
+	externalincludedirs
+	{
+		table.unpack(CoreProjectIncludeDirs)
+	}
+
+	links
+	{
+		"QuentlamEngine"
+	}
+
+	filter "system:windows"
+		staticruntime "On"
+		systemversion "latest"
+
+	defines
+	{
+		"QL_PLATFORM_WINDOWS",
+		table.unpack(CoreProjectDefines)
+	}
+
+	filter "configurations:Debug"
+		defines "QL_DEBUG"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "QL_RELEASE"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
+		runtime "Release"
+		optimize "on"
+		symbols "on"
+
+	filter "configurations:Dist"
+		defines "QL_DIST"
+		runtime "Release"
+		optimize "on"
+		symbols "on"
 
 project "QL-Editor"
 	location "QL-Editor"
@@ -278,15 +372,21 @@ project "QL-Editor"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "on"
+	debugdir "QL-Editor"
 
 	targetdir("bin/" ..outputdir.. "/%{prj.name}")
 	objdir("bin-int/" ..outputdir.. "/%{prj.name}")
 
+	pchheader "qlpch.h"
+	pchsource "QuentlamEngine/src/qlpch.cpp"
+	forceincludes "qlpch.h"
+
 	files
 	{
+		"QuentlamEngine/src/qlpch.h",
+		"QuentlamEngine/src/qlpch.cpp",
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
-
 	}
 
 	includedirs
@@ -294,12 +394,19 @@ project "QL-Editor"
 		"QuentlamEngine/vendor/spdlog/include",
 		"QuentlamEngine/src",
 		"QuentlamEngine/vendor",
+		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.assimp_build}"
+	}
+
+	externalincludedirs
+	{
+		table.unpack(CoreProjectIncludeDirs)
 	}
 
 	links
@@ -313,9 +420,9 @@ project "QL-Editor"
 
 	defines
 	{
-		"QL_PLATFORM_WINDOWS"
+		"QL_PLATFORM_WINDOWS",
+		table.unpack(CoreProjectDefines)
 	}
-
 
 	filter "configurations:Debug"
 		defines "QL_DEBUG"
@@ -330,10 +437,8 @@ project "QL-Editor"
 		optimize "on"
 		symbols "on"
 
-		
 	filter "configurations:Dist"
 		defines "QL_DIST"
 		runtime "Release"
 		optimize "on"
 		symbols "on"
-

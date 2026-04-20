@@ -3,8 +3,43 @@
 #include "glad/glad.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include <filesystem>
 namespace Quentlam
 {
+	namespace
+	{
+		std::filesystem::path ResolveShaderPath(const std::string& filepath)
+		{
+			namespace fs = std::filesystem;
+
+			const fs::path requestedPath(filepath);
+			if (fs::exists(requestedPath))
+				return requestedPath;
+
+			fs::path probe = fs::current_path();
+			while (!probe.empty())
+			{
+				const fs::path directCandidate = probe / requestedPath;
+				if (fs::exists(directCandidate))
+					return directCandidate;
+
+				const fs::path sandboxCandidate = probe / "Sandbox" / requestedPath;
+				if (fs::exists(sandboxCandidate))
+					return sandboxCandidate;
+
+				const fs::path editorCandidate = probe / "QL-Editor" / requestedPath;
+				if (fs::exists(editorCandidate))
+					return editorCandidate;
+
+				if (probe == probe.root_path())
+					break;
+				probe = probe.parent_path();
+			}
+
+			return requestedPath;
+		}
+	}
+
 	static GLenum ShaderTypeFromString(const std::string& type)
 	{
 		if (type == "vertex")return GL_VERTEX_SHADER;
@@ -62,7 +97,8 @@ namespace Quentlam
 		QL_PROFILE_FUNCTION();
 
 		std::string result;
-		std::ifstream in(filepath, std::ios::in | std::ios::binary);
+		const std::filesystem::path resolvedPath = ResolveShaderPath(filepath);
+		std::ifstream in(resolvedPath, std::ios::in | std::ios::binary);
 		if (in)
 		{
 			in.seekg(0, std::ios::end);
@@ -77,7 +113,7 @@ namespace Quentlam
 		}
 		else
 		{
-			QL_CORE_ERROR("Could not open file '{0}'", filepath);
+			QL_CORE_ERROR("Could not open file '{0}' (resolved to '{1}')", filepath, resolvedPath.string());
 		}
 
 		return result;

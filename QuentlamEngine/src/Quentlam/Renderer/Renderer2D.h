@@ -36,6 +36,8 @@ namespace Quentlam
 		static void DrawSprite(const glm::mat4& transform, const struct SpriteTransformComponent& src, int entityID = -1);
 		static void DrawSprite(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColor = glm::vec4(1.0f), int entityID = -1);
 
+		static void DrawTriangle(const glm::mat4& transform, const glm::vec4& color, int entityID = -1);
+
 
 
 		//Rotation is in radians (��������ת������)

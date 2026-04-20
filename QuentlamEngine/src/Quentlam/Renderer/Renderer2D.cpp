@@ -33,21 +33,28 @@ namespace Quentlam
 		static const uint32_t MaxIndices = MaxQuads * 6;
 		static const uint32_t MaxTextureSlots = 32;// TODO: RenderCaps
 
-
-
 		Ref<VertexArray> QuadVertexArray;
 		Ref<VertexBuffer> QuadVertexBuffer;
+		
+		Ref<VertexArray> TriangleVertexArray;
+		Ref<VertexBuffer> TriangleVertexBuffer;
+
 		Ref<Shader> TextureShader;
 		Ref<Texture2D> WhiteTexture;
 
 		uint32_t QuadIndexCount = 0;
 		QuadVertex* QuadVertexBufferBase = nullptr;
 		QuadVertex* QuadVertexBufferPtr = nullptr;
+
+		uint32_t TriangleIndexCount = 0;
+		QuadVertex* TriangleVertexBufferBase = nullptr;
+		QuadVertex* TriangleVertexBufferPtr = nullptr;
+
 		std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
 		uint32_t TextureSlotIndex = 1; // 0 = white texture
 
 		glm::vec4 QuadVertexPosition[4];
-
+		glm::vec4 TriangleVertexPosition[3];
 
 		Renderer2D::Statistics Stats;
 	};
@@ -92,7 +99,35 @@ namespace Quentlam
 
 		Ref<IndexBuffer> quadIB = IndexBuffer::Create(quadIndices, s_Data.MaxIndices);
 		s_Data.QuadVertexArray->SetIndexBuffer(quadIB);
-		delete quadIndices;
+		delete[] quadIndices;
+
+		// Triangles
+		s_Data.TriangleVertexArray = VertexArray::Create();
+		s_Data.TriangleVertexBuffer = VertexBuffer::Create(s_Data.MaxIndices * sizeof(QuadVertex));
+		s_Data.TriangleVertexBuffer->SetLayout({
+			{ShaderDataType::Float3,"a_Position"},
+			{ShaderDataType::Float4,"a_Color"},
+			{ ShaderDataType::Float2,"a_TexCoord" },
+			{ ShaderDataType::Float,"a_TexIndex" },
+			{ ShaderDataType::Float,"a_TilingFactor" },
+			{ ShaderDataType::Int,"a_EntityID" }
+			});
+		s_Data.TriangleVertexArray->AddVertexBuffer(s_Data.TriangleVertexBuffer);
+
+		s_Data.TriangleVertexBufferBase = new QuadVertex[s_Data.MaxIndices];
+		uint32_t* triangleIndices = new uint32_t[s_Data.MaxIndices];
+		offset = 0;
+		for (uint32_t i = 0; i < s_Data.MaxIndices; i += 3)
+		{
+			triangleIndices[i + 0] = offset + 0;
+			triangleIndices[i + 1] = offset + 1;
+			triangleIndices[i + 2] = offset + 2;
+			offset += 3;
+		}
+
+		Ref<IndexBuffer> triangleIB = IndexBuffer::Create(triangleIndices, s_Data.MaxIndices);
+		s_Data.TriangleVertexArray->SetIndexBuffer(triangleIB);
+		delete[] triangleIndices;
 
 		s_Data.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
@@ -110,18 +145,23 @@ namespace Quentlam
 		
 		s_Data.TextureSlots[0] = s_Data.WhiteTexture;
 
-		s_Data.QuadVertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[1] = {  0.5f, -0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[2] = {  0.5f,  0.5f, 0.0f, 1.0f };
-		s_Data.QuadVertexPosition[3] = { -0.5f,  0.5f, 0.0f, 1.0f };
+		s_Data.QuadVertexPosition[0] = { -0.5f,-0.5f,0.0f,1.0f };
+		s_Data.QuadVertexPosition[1] = { 0.5f, -0.5f,0.0f,1.0f };
+		s_Data.QuadVertexPosition[2] = { 0.5f,  0.5f,0.0f,1.0f };
+		s_Data.QuadVertexPosition[3] = { -0.5f, 0.5f,0.0f,1.0f };
 
+		s_Data.TriangleVertexPosition[0] = { 0.0f, 0.5f, 0.0f, 1.0f }; // Top
+		s_Data.TriangleVertexPosition[1] = { -0.5f, -0.5f, 0.0f, 1.0f }; // Bottom-left
+		s_Data.TriangleVertexPosition[2] = { 0.5f, -0.5f, 0.0f, 1.0f }; // Bottom-right
 	}
 
 	void Renderer2D::Shutdown()
 	{
 		QL_PROFILE_FUNCTION();
-
+		delete[] s_Data.QuadVertexBufferBase;
+		delete[] s_Data.TriangleVertexBufferBase;
 	}
+
 	void Renderer2D::BeginScene(OrthographicCamera& camera)
 	{
 		QL_PROFILE_FUNCTION();
@@ -131,6 +171,9 @@ namespace Quentlam
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TriangleIndexCount = 0;
+		s_Data.TriangleVertexBufferPtr = s_Data.TriangleVertexBufferBase;
 
 		s_Data.TextureSlotIndex = 1;
 	}
@@ -144,14 +187,20 @@ namespace Quentlam
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
+		s_Data.TriangleIndexCount = 0;
+		s_Data.TriangleVertexBufferPtr = s_Data.TriangleVertexBufferBase;
+
 		s_Data.TextureSlotIndex = 1;
 	}
 	void Renderer2D::EndScene()
 	{
 		QL_PROFILE_FUNCTION();
 
-		uint32_t dataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
-		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, dataSize);
+		uint32_t quadDataSize = (uint8_t*)s_Data.QuadVertexBufferPtr - (uint8_t*)s_Data.QuadVertexBufferBase;
+		s_Data.QuadVertexBuffer->SetData(s_Data.QuadVertexBufferBase, quadDataSize);
+
+		uint32_t triangleDataSize = (uint8_t*)s_Data.TriangleVertexBufferPtr - (uint8_t*)s_Data.TriangleVertexBufferBase;
+		s_Data.TriangleVertexBuffer->SetData(s_Data.TriangleVertexBufferBase, triangleDataSize);
 
 		Flush();
 	}
@@ -159,9 +208,17 @@ namespace Quentlam
 	{
 		for (int i = 0; i < s_Data.TextureSlotIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
-		RenderCommand::DrawIndexed(s_Data.QuadVertexArray,s_Data.QuadIndexCount);
 
-		s_Data.Stats.DrawCalls++;
+		if (s_Data.QuadIndexCount)
+		{
+			RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
+			s_Data.Stats.DrawCalls++;
+		}
+		if (s_Data.TriangleIndexCount)
+		{
+			RenderCommand::DrawIndexed(s_Data.TriangleVertexArray, s_Data.TriangleIndexCount);
+			s_Data.Stats.DrawCalls++;
+		}
 	}
 
 	void Renderer2D::FlushAndReset()
@@ -170,6 +227,9 @@ namespace Quentlam
 
 		s_Data.QuadIndexCount = 0;
 		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
+
+		s_Data.TriangleIndexCount = 0;
+		s_Data.TriangleVertexBufferPtr = s_Data.TriangleVertexBufferBase;
 
 		s_Data.TextureSlotIndex = 1;
 	}
@@ -203,8 +263,6 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 		constexpr size_t quadVertexCount = 4;
-		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
-
 		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
@@ -227,7 +285,6 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 		constexpr size_t quadVertexCount = 4;
-		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 
 		const glm::vec2* textureCoords = subTexture->GetTexCoords();
 		const Ref<Texture2D> texture = subTexture->GetTexture();
@@ -262,7 +319,7 @@ namespace Quentlam
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->Color = tinColor;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
@@ -276,10 +333,35 @@ namespace Quentlam
 
 	}
 
+	void Renderer2D::DrawTriangle(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	{
+		QL_PROFILE_FUNCTION();
+		constexpr size_t triangleVertexCount = 3;
+		const float textureIndex = 0.0f; // White Texture
+		constexpr glm::vec2 textureCoords[] = { { 0.5f, 1.0f }, { 0.0f, 0.0f },{ 1.0f, 0.0f } };
+		const float tilingFactor = 1.0f;
+
+		if (s_Data.TriangleIndexCount >= Renderer2DData::MaxIndices)
+			FlushAndReset();
+
+		for (size_t i = 0; i < triangleVertexCount; i++)
+		{
+			s_Data.TriangleVertexBufferPtr->Position = transform * s_Data.TriangleVertexPosition[i];
+			s_Data.TriangleVertexBufferPtr->Color = color;
+			s_Data.TriangleVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.TriangleVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.TriangleVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.TriangleVertexBufferPtr->EntityID = entityID;
+			s_Data.TriangleVertexBufferPtr++;
+		}
+
+		s_Data.TriangleIndexCount += 3;
+		s_Data.Stats.QuadCount++; // We'll count triangles in quadcount for simplicity
+	}
+
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
-
 		const float textureIndex = 0.0f;
 		const float tilingFactor = 1.0f;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
@@ -308,7 +390,6 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 		constexpr size_t quadVertexCount = 4;
-		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
@@ -337,7 +418,7 @@ namespace Quentlam
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->Color = tinColor;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
@@ -427,7 +508,6 @@ namespace Quentlam
 
 		constexpr size_t quadVertexCount = 4;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
-		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 
 		float textureIndex = 0.0f;
 		for (int i = 1; i < s_Data.TextureSlotIndex; i++)
@@ -456,7 +536,7 @@ namespace Quentlam
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->Color = tinColor;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;
@@ -500,7 +580,6 @@ namespace Quentlam
 			FlushAndReset();
 
 		constexpr size_t quadVertexCount = 4;
-		constexpr glm::vec4 color = { 1.0f,1.0f, 1.0f, 1.0f };
 
 		const Ref<Texture2D> texture = subTexture->GetTexture();
 		const glm::vec2* textureCoords = subTexture->GetTexCoords();
@@ -533,7 +612,7 @@ namespace Quentlam
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
 			s_Data.QuadVertexBufferPtr->Position = transform * s_Data.QuadVertexPosition[i];
-			s_Data.QuadVertexBufferPtr->Color = color;
+			s_Data.QuadVertexBufferPtr->Color = tintColor;
 			s_Data.QuadVertexBufferPtr->TexCoord = textureCoords[i];
 			s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
 			s_Data.QuadVertexBufferPtr->TilingFactor = tilingFactor;

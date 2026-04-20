@@ -1,5 +1,5 @@
 param(
-    [string]$ExePath = ".\bin\Debug-windows-x86_64\Tests\Tests.exe"
+    [string]$ExePath = ".\bin\Debug-windows-x86_64\ParkourGame\ParkourGame.exe"
 )
 
 $Tests = @(

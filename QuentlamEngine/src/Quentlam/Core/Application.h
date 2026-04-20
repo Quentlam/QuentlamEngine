@@ -22,7 +22,7 @@ namespace Quentlam
 	class QUENTLAM_API Application
 	{
 	public:
-		Application(const std::string& name = "Quentlam App");
+		Application(const std::string& name = "Quentlam App", uint32_t width = 1280, uint32_t height = 720);
 		virtual ~Application();
 
 		void OnEvent(Event& e);
@@ -46,7 +46,7 @@ namespace Quentlam
 		ImGuiLayer* m_ImGuiLayer;
 		LayerStack m_LayerStack;
 		bool m_Running = true;
-		bool m_Minimized = false;//是否为最小化的标志位
+		bool m_Minimized = false;//锟角凤拷为锟斤拷小锟斤拷锟侥憋拷志位
 
 	private:
 		static Application* s_Instance;

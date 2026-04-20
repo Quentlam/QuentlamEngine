@@ -76,10 +76,16 @@ namespace Quentlam
 {
 
 	template<typename T>
-	using Scope = std::unique_ptr<T>;//Î¨Ò»Ö¸Õë
+	using Scope = std::unique_ptr<T>;//Î¨Ò»Ö¸ï¿½ï¿½
+
+	template<typename T, typename ... Args>
+	constexpr Scope<T> CreateScope(Args&& ... args)
+	{
+		return std::make_unique<T>(std::forward<Args>(args)...);
+	}
 
 	template<typename T>
-	using Ref = std::shared_ptr<T>;//¹²ÏíÖ¸Õë
+	using Ref = std::shared_ptr<T>;//ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½
 	template<typename T,typename ... Args>
 	constexpr Ref<T> CreateRef(Args&& ... args)
 	{
