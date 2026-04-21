@@ -37,7 +37,7 @@ void ParticleSystem::Emit(const ParticleProps& particleProps)
 	particle.LifeTime = particleProps.LifeTime;
 	particle.LifeRemaining = particleProps.LifeTime;
 
-	m_PoolIndex = --m_PoolIndex % m_ParticlePool.size();
+	m_PoolIndex = (m_PoolIndex + 1) % m_ParticlePool.size();
 }
 
 void ParticleSystem::OnUpdate(Quentlam::Timestep ts)

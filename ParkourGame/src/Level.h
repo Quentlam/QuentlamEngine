@@ -51,5 +51,9 @@ private:
 
 	float m_TimeStep = 1.0f / 60.0f;
 	float m_Accumulator = 0.0f;
+
+	// Configuration for pillars
+	static constexpr float MIN_GAP = 5.5f; // Increased for better playability
+	static constexpr float MAX_GAP = 12.0f;
 };
 

@@ -48,8 +48,6 @@ void Player::OnUpdate(Quentlam::Timestep ts)
 
 	if (Quentlam::Input::IsKeyPressed(QL_KEY_SPACE))
 	{
-		// Apply impulse or set velocity for engine power
-		// m_EnginePower could be treated as impulse or velocity increment
 		b2Vec2 vel = m_Body->GetLinearVelocity();
 		vel.y += m_EnginePower * ts * 60.0f; // Make it frame-rate independent
 		if (vel.y < 0.0f)
@@ -70,28 +68,24 @@ void Player::OnUpdate(Quentlam::Timestep ts)
 	vel.y = glm::clamp(vel.y, -20.0f, 20.0f);
 	m_Body->SetLinearVelocity(vel);
 
-	m_Position = { m_Body->GetPosition().x, m_Body->GetPosition().y };
-
 	// 3.1 Ship rotation based on velocity
 	if (glm::length(glm::vec2(vel.x, vel.y)) > 0.01f)
 	{
 		glm::vec2 velDir = glm::normalize(glm::vec2(vel.x, vel.y));
 		glm::vec2 upDir = { 0.0f, 1.0f };
 		
-		// Calculate angle
 		float targetAngle = glm::acos(glm::dot(upDir, velDir));
 		if (vel.x > 0.0f) targetAngle = -targetAngle;
-		else targetAngle = targetAngle; // depending on orientation
 
-		// Actually, target angle is -θ.
-		// Wait, if it points upward originally, and it moves right (vel.x > 0), the angle should be negative (clockwise)
-		float currentAngle = m_Body->GetAngle();
+		// Smoothly interpolate the visual rotation independently of the physics body rotation
+		float currentAngle = m_VisualRotation;
 		float angleDiff = targetAngle - currentAngle;
 		
-		// Normalize angleDiff
+		// Normalize angleDiff to [-PI, PI]
 		while (angleDiff > glm::pi<float>()) angleDiff -= 2.0f * glm::pi<float>();
 		while (angleDiff < -glm::pi<float>()) angleDiff += 2.0f * glm::pi<float>();
 
+		// Calculate visual rotation
 		float absDiff = glm::abs(glm::degrees(angleDiff));
 		float rotationSpeed = (absDiff > 1.0f) ? glm::radians(300.0f) : glm::radians(120.0f);
 		
@@ -101,8 +95,14 @@ void Player::OnUpdate(Quentlam::Timestep ts)
 		else
 			currentAngle += glm::sign(angleDiff) * step;
 
-		m_Body->SetTransform(m_Body->GetPosition(), currentAngle);
+		m_VisualRotation = currentAngle;
+		
+		// Set the physics body angle immediately to the target angle so physics doesn't jitter,
+		// but keep visual rotation smooth.
+		m_Body->SetTransform(m_Body->GetPosition(), targetAngle);
 	}
+	
+	m_Position = { m_Body->GetPosition().x, m_Body->GetPosition().y };
 
 	//Particles
 	if (m_Time > m_SmokeNextEmitTime)
@@ -124,6 +124,7 @@ void Player::Reset()
 	m_Position = { -5.0f , 0.0f };
 	m_Velocity = { 5.0f , 0.0f };
 	m_Time = 0.0f;
+	m_VisualRotation = 0.0f;
 	m_SmokeNextEmitTime = m_SmokeEmitInterval;
 
 	if (m_World)
@@ -181,7 +182,7 @@ glm::vec2 Player::GetPosition() const
 
 float Player::GetRotation() const
 {
-	return m_Body ? glm::degrees(m_Body->GetAngle()) : 0.0f;
+	return glm::degrees(m_VisualRotation);
 }
 
 void Player::OnRender()

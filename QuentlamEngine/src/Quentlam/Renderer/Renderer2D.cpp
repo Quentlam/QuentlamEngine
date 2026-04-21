@@ -209,14 +209,14 @@ namespace Quentlam
 		for (int i = 0; i < s_Data.TextureSlotIndex; i++)
 			s_Data.TextureSlots[i]->Bind(i);
 
-		if (s_Data.QuadIndexCount)
-		{
-			RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
-			s_Data.Stats.DrawCalls++;
-		}
 		if (s_Data.TriangleIndexCount)
 		{
 			RenderCommand::DrawIndexed(s_Data.TriangleVertexArray, s_Data.TriangleIndexCount);
+			s_Data.Stats.DrawCalls++;
+		}
+		if (s_Data.QuadIndexCount)
+		{
+			RenderCommand::DrawIndexed(s_Data.QuadVertexArray, s_Data.QuadIndexCount);
 			s_Data.Stats.DrawCalls++;
 		}
 	}
@@ -365,10 +365,11 @@ namespace Quentlam
 		const float textureIndex = 0.0f;
 		const float tilingFactor = 1.0f;
 		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
-		constexpr size_t quadVertexCount = 4;
 
 		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
 			FlushAndReset();
+
+		constexpr size_t quadVertexCount = 4;
 
 		for (uint32_t i = 0; i < quadVertexCount; i++)
 		{
@@ -389,13 +390,15 @@ namespace Quentlam
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tinColor, int entityID)
 	{
 		QL_PROFILE_FUNCTION();
-		constexpr size_t quadVertexCount = 4;
-		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
 
-		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices || s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 			FlushAndReset();
 
+		constexpr size_t quadVertexCount = 4;
+
 		float textureIndex = 0.0f;
+
+		constexpr glm::vec2 textureCoords[] = { { 0.0f,0.0f }, { 1.0f, 0.0f },{ 1.0f,1.0f },{ 0.0f, 1.0f} };
 
 		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
 		{
@@ -503,7 +506,7 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
-		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices || s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 			FlushAndReset();
 
 		constexpr size_t quadVertexCount = 4;
@@ -576,7 +579,7 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
-		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices)
+		if (s_Data.QuadIndexCount >= Renderer2DData::MaxIndices || s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
 			FlushAndReset();
 
 		constexpr size_t quadVertexCount = 4;

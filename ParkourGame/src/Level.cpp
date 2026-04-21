@@ -166,12 +166,11 @@ void Level::Init()
 
 void Level::OnUpdate(Quentlam::Timestep ts)
 {
-	m_Accumulator += ts;
-	while (m_Accumulator >= m_TimeStep)
-	{
-		m_PhysicsWorld->Step(m_TimeStep, 8, 3);
-		m_Accumulator -= m_TimeStep;
-	}
+	// Instead of strict fixed accumulator causing jitter in camera/visuals if they don't match,
+	// let's do a more standard variable step for visuals, but Box2D handles fixed internally or we just step by ts.
+	// A simpler approach to avoid rendering jitter is to just step Box2D by ts.
+	// But fixed step is better for physics stability. We will stick to stepping Box2D by ts for perfectly smooth visual updates in a simple game.
+	m_PhysicsWorld->Step(ts, 8, 3);
 
 	m_Player.OnUpdate(ts);
 		
@@ -204,7 +203,8 @@ void Level::OnUpdate(Quentlam::Timestep ts)
 			float newX = m_PillarsTarget + 20.0f;
 			
 			float center = Random::Float() * 20.0f - 10.0f;
-			float gap = 5.0f + Random::Float() * 5.0f;
+			float gap = MIN_GAP + Random::Float() * (MAX_GAP - MIN_GAP);
+			if (gap < MIN_GAP) gap = MIN_GAP; // Failsafe
 
 			float newTopY = 10.0f + gap * 0.5f + center;
 			float newBottomY = -10.0f - gap * 0.5f + center;
@@ -241,12 +241,12 @@ void Level::OnRender()
 	Quentlam::Renderer2D::DrawQuad({ playerPos.x,0.0f,-0.8f }, { 50.0f,50.0f }, { 0.3f,0.3f,0.3f,1.0f });
 
 	//Floor and ceiling
-	Quentlam::Renderer2D::DrawQuad({ playerPos.x,34.0f }, { 50.0f,50.0f }, color);
-	Quentlam::Renderer2D::DrawQuad({ playerPos.x,-34.0f }, { 50.0f,50.0f }, color);
+	Quentlam::Renderer2D::DrawQuad({ playerPos.x, 34.0f, -0.8f }, { 50.0f,50.0f }, color);
+	Quentlam::Renderer2D::DrawQuad({ playerPos.x,-34.0f, -0.8f }, { 50.0f,50.0f }, color);
 	
-	// Draw Boundaries (visible boundary lines)
-	Quentlam::Renderer2D::DrawRotatedQuad({ playerPos.x, 9.0f, 0.5f }, { 40.0f, 0.1f }, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f });
-	Quentlam::Renderer2D::DrawRotatedQuad({ playerPos.x, -9.0f, 0.5f }, { 40.0f, 0.1f }, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f });
+	// Boundaries
+	Quentlam::Renderer2D::DrawRotatedQuad({ playerPos.x, 9.0f, 0.6f }, { 40.0f, 0.1f }, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f });
+	Quentlam::Renderer2D::DrawRotatedQuad({ playerPos.x, -9.0f, 0.6f }, { 40.0f, 0.1f }, 0.0f, { 1.0f, 0.0f, 0.0f, 1.0f });
 
 	for(auto& pillar : m_Pillars)
 	{
@@ -295,7 +295,8 @@ void Level::CreatePillar(int index, float offset)
 	pillar.BottomPosition.z = index * 0.01f - 0.5f + 0.005f;
 	
 	float center = Random::Float() * 20.0f - 10.0f;
-	float gap = 5.0f + Random::Float() * 5.0f;
+	float gap = MIN_GAP + Random::Float() * (MAX_GAP - MIN_GAP);
+	if (gap < MIN_GAP) gap = MIN_GAP; // Failsafe
 
 	pillar.TopPosition.y = 10.0f + gap * 0.5f + center;
 	pillar.BottomPosition.y = -10.0f - gap * 0.5f + center;
@@ -470,6 +471,21 @@ void Level::RunCollisionTests()
 
 	QL_CORE_ASSERT(testLevel.m_Gameover, "Collision Test Failed: Player overlapping with boundary did not trigger GameOver!");
 	printf("[TEST] Collision Tests Passed!\n");
+
+	printf("[TEST] Running Pillar Gap Tests (10000 iterations)...\n");
+	testLevel.m_Pillars.resize(20);
+	for (int i = 0; i < 10000; i++)
+	{
+		testLevel.CreatePillar(0, 0.0f);
+		float topY = testLevel.m_Pillars[0].TopPosition.y;
+		float botY = testLevel.m_Pillars[0].BottomPosition.y;
+		float gap = topY - botY - 20.0f; // Since top center is 10 + gap/2 + center, bottom center is -10 - gap/2 + center
+		if (gap < MIN_GAP - 0.01f)
+		{
+			QL_CORE_ASSERT(false, "Gap Test Failed: Gap is smaller than MIN_GAP!");
+		}
+	}
+	printf("[TEST] Pillar Gap Tests Passed!\n");
 
 	delete testWorld;
 }
