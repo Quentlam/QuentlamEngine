@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 #include "Quentlam/Renderer/Camera.h"
+#include "Quentlam/Renderer/Texture.h"
 
 
 namespace Quentlam
@@ -35,6 +36,7 @@ namespace Quentlam
 	struct SpriteTransformComponent
 	{
 		glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f };
+		Ref<Texture2D> Texture = nullptr;
 
 		SpriteTransformComponent() = default;
 		SpriteTransformComponent(const SpriteTransformComponent&) = default;
@@ -43,9 +45,24 @@ namespace Quentlam
 		}
 	};
 
+	struct TriangleRendererComponent
+	{
+		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		Ref<Texture2D> Texture;
+
+		TriangleRendererComponent() = default;
+		TriangleRendererComponent(const TriangleRendererComponent&) = default;
+		TriangleRendererComponent(const glm::vec4& color)
+			: Color(color) {}
+	};
+
 	struct CubeRendererComponent
 	{
 		glm::vec4 Color{ 1.0f, 1.0f, 1.0f, 1.0f };
+		float AmbientStrength = 0.3f;
+		float DiffuseStrength = 0.8f;
+		float SpecularStrength = 0.5f;
+		float Shininess = 32.0f;
 
 		CubeRendererComponent() = default;
 		CubeRendererComponent(const CubeRendererComponent&) = default;
@@ -61,6 +78,11 @@ namespace Quentlam
 		int Segments = 16;
 		float Radius = 0.5f;
 		float Height = 1.0f;
+
+		float AmbientStrength = 0.3f;
+		float DiffuseStrength = 0.8f;
+		float SpecularStrength = 0.5f;
+		float Shininess = 32.0f;
 
 		PrimitiveRendererComponent() = default;
 		PrimitiveRendererComponent(const PrimitiveRendererComponent&) = default;
@@ -89,6 +111,9 @@ namespace Quentlam
 		BodyType Type = BodyType::Static;
 		bool FixedRotation = false;
 
+		// Support for Gravity Scale overrides
+		float GravityScale = 1.0f;
+
 		// Storage for runtime body
 		void* RuntimeBody = nullptr;
 
@@ -107,11 +132,31 @@ namespace Quentlam
 		float Restitution = 0.0f;
 		float RestitutionThreshold = 0.5f;
 
+		bool ShowCollider = true;
+
 		// Storage for runtime fixture
 		void* RuntimeFixture = nullptr;
 
 		BoxCollider2DComponent() = default;
 		BoxCollider2DComponent(const BoxCollider2DComponent&) = default;
+	};
+
+	struct TriangleCollider2DComponent
+	{
+		glm::vec2 Offset = { 0.0f, 0.0f };
+		glm::vec2 Size = { 0.5f, 0.5f };
+
+		float Density = 1.0f;
+		float Friction = 0.5f;
+		float Restitution = 0.0f;
+		float RestitutionThreshold = 0.5f;
+
+		bool ShowCollider = true;
+
+		void* RuntimeFixture = nullptr;
+
+		TriangleCollider2DComponent() = default;
+		TriangleCollider2DComponent(const TriangleCollider2DComponent&) = default;
 	};
 
 	// =========================================================================
@@ -140,6 +185,8 @@ namespace Quentlam
 
 		float Friction = 0.5f;
 		float Restitution = 0.0f;
+
+		bool ShowCollider = true;
 
 		BoxCollider3DComponent() = default;
 		BoxCollider3DComponent(const BoxCollider3DComponent&) = default;

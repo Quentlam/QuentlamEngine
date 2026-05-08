@@ -3,6 +3,11 @@
 #include "Quentlam/Scene/Components.h"
 #include "Quentlam/Scene/Entity.h"
 
+// Forward declaration since we can't include ParkourComponents.h from QuentlamEngine core easily
+namespace Quentlam {
+	struct PlayerControllerComponent;
+}
+
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
@@ -67,6 +72,7 @@ namespace Quentlam {
 			// Very basic angle extraction for 2D (assuming Z-axis rotation)
 			bodyDef.angle = atan2(transform.Transform[0][1], transform.Transform[0][0]);
 			bodyDef.fixedRotation = rb2d.FixedRotation;
+			bodyDef.gravityScale = rb2d.GravityScale;
 
 			b2Body* body = s_PhysicsWorld->CreateBody(&bodyDef);
 			rb2d.RuntimeBody = body;
@@ -84,7 +90,7 @@ namespace Quentlam {
 					glm::length(glm::vec3(transform.Transform[2]))
 				);
 
-				boxShape.SetAsBox(bc2d.Size.x * scale.x, bc2d.Size.y * scale.y, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
+				boxShape.SetAsBox(bc2d.Size.x * scale.x * 0.5f, bc2d.Size.y * scale.y * 0.5f, b2Vec2(bc2d.Offset.x, bc2d.Offset.y), 0.0f);
 
 				b2FixtureDef fixtureDef;
 				fixtureDef.shape = &boxShape;
@@ -93,6 +99,33 @@ namespace Quentlam {
 				fixtureDef.restitution = bc2d.Restitution;
 				fixtureDef.restitutionThreshold = bc2d.RestitutionThreshold;
 				bc2d.RuntimeFixture = body->CreateFixture(&fixtureDef);
+			}
+
+			if (entity.HasComponent<TriangleCollider2DComponent>())
+			{
+				auto& tc2d = entity.GetComponent<TriangleCollider2DComponent>();
+
+				b2PolygonShape triangleShape;
+				
+				glm::vec3 scale(
+					glm::length(glm::vec3(transform.Transform[0])),
+					glm::length(glm::vec3(transform.Transform[1])),
+					glm::length(glm::vec3(transform.Transform[2]))
+				);
+
+				b2Vec2 vertices[3];
+				vertices[0].Set(tc2d.Offset.x - tc2d.Size.x * scale.x * 0.5f, tc2d.Offset.y - tc2d.Size.y * scale.y * 0.5f); // Bottom-left
+				vertices[1].Set(tc2d.Offset.x + tc2d.Size.x * scale.x * 0.5f, tc2d.Offset.y - tc2d.Size.y * scale.y * 0.5f); // Bottom-right
+				vertices[2].Set(tc2d.Offset.x, tc2d.Offset.y + tc2d.Size.y * scale.y * 0.5f); // Top
+				triangleShape.Set(vertices, 3);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &triangleShape;
+				fixtureDef.density = tc2d.Density;
+				fixtureDef.friction = tc2d.Friction;
+				fixtureDef.restitution = tc2d.Restitution;
+				fixtureDef.restitutionThreshold = tc2d.RestitutionThreshold;
+				tc2d.RuntimeFixture = body->CreateFixture(&fixtureDef);
 			}
 		}
 
@@ -111,9 +144,9 @@ namespace Quentlam {
 
 	void Physics2D::OnUpdate(Scene* scene, Timestep ts)
 	{
-		if (!s_PhysicsWorld)
+		if (!s_PhysicsWorld || ts == 0.0f)
 			return;
-
+			
 		const int32_t velocityIterations = 6;
 		const int32_t positionIterations = 2;
 		s_PhysicsWorld->Step(ts, velocityIterations, positionIterations);
@@ -130,19 +163,31 @@ namespace Quentlam {
 
 			const auto& position = body->GetPosition();
 			
-			// Update TransformComponent translation
-			transform.Transform[3][0] = position.x;
-			transform.Transform[3][1] = position.y;
-			
 			// Update rotation if needed (simplified)
 			float angle = body->GetAngle();
-			// Reconstruct transform matrix (scale x rot x trans)
+			
+			// DO NOT overwrite the transform component if the entity is managed by a specific controller 
+			// like PlayerControllerComponent which manually handles its visual rotation/scale.
+			// Actually we can't cleanly check PlayerControllerComponent here without coupling. 
+			// Instead, just don't reset the scale! Keep the scale that was already in the transform.
 			glm::vec3 scale(
 				glm::length(glm::vec3(transform.Transform[0])),
 				glm::length(glm::vec3(transform.Transform[1])),
 				glm::length(glm::vec3(transform.Transform[2]))
 			);
-
+			
+			// We only want to update the translation and possibly rotation
+			transform.Transform[3][0] = position.x;
+			transform.Transform[3][1] = position.y;
+			
+			// If it's a dynamic body and NOT fixed rotation, we could update the rotation.
+			// For our parkour game, the player's rotation is driven by ParkourSystem, 
+			// but ParkourSystem already calls body->SetTransform(..., angle) overriding Physics2D.
+			// So we can just leave this as is, but we must reconstruct the matrix properly 
+			// using the CURRENT rotation if we don't want to touch it, or using body angle if we do.
+			// To avoid breaking the player's custom VisualRotation logic, we won't apply the body's angle 
+			// directly to the transform if FixedRotation is false but we are using custom rotation.
+			// Actually, ParkourSystem sets the angle on the body, so body->GetAngle() IS the visual rotation!
 			transform.Transform[0] = glm::vec4(cos(angle) * scale.x, sin(angle) * scale.x, 0.0f, 0.0f);
 			transform.Transform[1] = glm::vec4(-sin(angle) * scale.y, cos(angle) * scale.y, 0.0f, 0.0f);
 			transform.Transform[2] = glm::vec4(0.0f, 0.0f, scale.z, 0.0f);

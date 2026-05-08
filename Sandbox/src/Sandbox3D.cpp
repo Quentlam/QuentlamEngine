@@ -79,7 +79,30 @@ void Sandbox3D::OnUpdate(Quentlam::Timestep ts)
 		Quentlam::Renderer3D::DrawCube(transform, color);
 	}
 
-	// 4. Draw imported model if loaded
+	// 4. Draw demonstration capsules for lighting models
+	glm::vec4 capsuleColor(0.2f, 0.6f, 0.8f, 1.0f);
+	
+	// Capsule 1: Ambient only (Ambient=1, Diffuse=0, Specular=0)															  
+	glm::mat4 p1 = glm::translate(glm::mat4(1.0f), glm::vec3(-2.0f, 1.5f, 5.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.4f,0.4f, 0.4f));
+	Quentlam::Renderer3D::DrawCapsule(p1, capsuleColor, -1, 1.0f, 0.0f, 0.0f, 32.0f);										  
+																															  
+	// Capsule 2: Diffuse only (Ambient=0, Diffuse=1, Specular=0)															  
+	glm::mat4 p2 = glm::translate(glm::mat4(1.0f), glm::vec3(-1.0f, 1.5f, 5.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.4f,0.4f, 0.4f));
+	Quentlam::Renderer3D::DrawCapsule(p2, capsuleColor, -1, 0.0f, 1.0f, 0.0f, 32.0f);										
+																															
+	// Capsule 3: Specular only (Ambient=0, Diffuse=0, Specular=1)															
+	glm::mat4 p3 = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 1.5f, 5.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.4f, 0.4f,0.4f));
+	Quentlam::Renderer3D::DrawCapsule(p3, capsuleColor, -1, 0.0f, 0.0f, 1.0f, 128.0f);										  
+																															  
+	// Capsule 4: Ambient + Diffuse (Ambient=0.3, Diffuse=0.8, Specular=0)													  
+	glm::mat4 p4 = glm::translate(glm::mat4(1.0f), glm::vec3(1.0f, 1.5f, 5.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.4f, 0.4f,0.4f));
+	Quentlam::Renderer3D::DrawCapsule(p4, capsuleColor, -1, 0.3f, 0.8f, 0.0f, 32.0f);										  
+																															  
+	// Capsule 5: Full Phong Model (Ambient=0.3, Diffuse=0.8, Specular=0.5)													  
+	glm::mat4 p5 = glm::translate(glm::mat4(1.0f), glm::vec3(2.0f, 1.5f, 5.0f)) * glm::scale(glm::mat4(1.0f), glm::vec3(0.4f, 0.4f,0.4f));
+	Quentlam::Renderer3D::DrawCapsule(p5, capsuleColor, -1, 0.3f, 0.8f, 0.5f, 64.0f);
+
+	// 5. Draw imported model if loaded
 	if (m_Model)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, -0.5f, -2.0f)) 

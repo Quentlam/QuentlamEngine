@@ -1,51 +1,76 @@
 #type vertex
 #version 330 core
 
-layout(location = 0)in vec3 a_Position;
-layout(location = 1)in vec4 a_Color;
-layout(location = 2)in vec2 a_TexCoord;
-layout(location = 3)in float a_TexIndex;
-layout(location = 4)in float a_TilingFactor;
+layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec3 a_Normal;
+layout(location = 2) in vec4 a_Color;
+layout(location = 3) in vec2 a_TexCoord;
+layout(location = 4) in float a_TexIndex;
+layout(location = 5) in float a_TilingFactor;
+layout(location = 6) in int a_EntityID;
+layout(location = 7) in float a_AmbientStrength;
+layout(location = 8) in float a_DiffuseStrength;
+layout(location = 9) in float a_SpecularStrength;
+layout(location = 10) in float a_Shininess;
 
-
-out vec2 v_TexCoord;
+out vec3 v_FragPos;
+out vec3 v_Normal;
 out vec4 v_Color;
+out vec2 v_TexCoord;
 out float v_TexIndex;
 out float v_TilingFactor;
+flat out int v_EntityID;
+
+out float v_AmbientStrength;
+out float v_DiffuseStrength;
+out float v_SpecularStrength;
+out float v_Shininess;
 
 uniform mat4 u_ViewProjection;
-uniform mat4 u_Transform;
-		 
+
 void main()
 {
+	v_FragPos = a_Position; 
+	v_Normal = a_Normal;
 	v_Color = a_Color;
 	v_TexCoord = a_TexCoord;
 	v_TexIndex = a_TexIndex;
 	v_TilingFactor = a_TilingFactor;
-	gl_Position = u_ViewProjection * vec4(a_Position,1.0);
+	v_EntityID = a_EntityID;
+	
+	v_AmbientStrength = a_AmbientStrength;
+	v_DiffuseStrength = a_DiffuseStrength;
+	v_SpecularStrength = a_SpecularStrength;
+	v_Shininess = a_Shininess;
+	
+	gl_Position = u_ViewProjection * vec4(a_Position, 1.0);
 }
-
 
 #type fragment
 #version 330 core
 
 layout(location = 0) out vec4 color;		
+layout(location = 1) out int color2;
 
+in vec3 v_FragPos;
+in vec3 v_Normal;
 in vec4 v_Color;
 in vec2 v_TexCoord;
 in float v_TexIndex;
 in float v_TilingFactor;
+flat in int v_EntityID;
 
-uniform vec4 u_Color;
-uniform float u_TilingFactor;
+in float v_AmbientStrength;
+in float v_DiffuseStrength;
+in float v_SpecularStrength;
+in float v_Shininess;
+
 uniform sampler2D u_Textures[32];
 
-
-
+uniform vec3 u_ViewPos;
 
 void main()
 {
-	//color = texture(u_Textures[int(v_TexIndex)],v_TexCoord * v_TilingFactor) * v_Color;
 	vec4 texColor = v_Color;
 	switch(int(v_TexIndex))
 	{
@@ -82,5 +107,28 @@ void main()
 	case 30:texColor *= texture(u_Textures[30],v_TexCoord * v_TilingFactor); break;
 	case 31:texColor *= texture(u_Textures[31],v_TexCoord * v_TilingFactor); break;
 	}
-	color = texColor;
+	
+	if (texColor.a < 0.1) discard;
+
+	vec3 lightDir = normalize(vec3(1.0, 1.0, 1.0)); // Fixed light direction for now
+	vec3 lightColor = vec3(1.0, 1.0, 1.0);
+	vec3 norm = normalize(v_Normal);
+	
+	// Ambient
+	vec3 ambient = v_AmbientStrength * lightColor;
+	
+	// Diffuse
+	float diff = max(dot(norm, lightDir), 0.0);
+	vec3 diffuse = v_DiffuseStrength * diff * lightColor;
+	
+	// Specular
+	vec3 viewDir = length(u_ViewPos) > 0.01 ? normalize(u_ViewPos - v_FragPos) : vec3(0.0, 0.0, 1.0);
+	vec3 reflectDir = reflect(-lightDir, norm);
+	float spec = pow(max(dot(viewDir, reflectDir), 0.0), v_Shininess);
+	vec3 specular = v_SpecularStrength * spec * lightColor;
+	
+	vec3 result = (ambient + diffuse + specular) * texColor.rgb;
+	
+	color = vec4(result, texColor.a);
+	color2 = v_EntityID;
 }

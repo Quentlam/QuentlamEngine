@@ -48,7 +48,6 @@ namespace Quentlam
 			m_Camera.SetRotation(m_CameraRotation);
 		}
 		m_Camera.SetPosition(m_CameraPosition);
-		m_CameraTranslationSpeed = m_ZoomLevel;
 	}
 
 	void OrthographicCameraController::OnEvent(Event& e)
@@ -72,9 +71,11 @@ namespace Quentlam
 	{
 		QL_PROFILE_FUNCTION();
 
+		// Change zoom level to modify the visible range (orthographic projection size)
 		m_ZoomLevel -= e.GetYOffset() * 0.25f;
 		m_ZoomLevel = std::max(m_ZoomLevel, 0.25f);
 		m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+
 		return false;
 	}
 

@@ -28,7 +28,7 @@ namespace Quentlam::EditorToolbarLayout
 		bool IsClamped = false;
 	};
 
-	inline Metrics Calculate(float viewportWidth, float viewportTop, float uiScale = 1.0f, float dpiScale = 1.0f)
+	inline Metrics Calculate(int numButtons, float viewportWidth, float viewportTop, float uiScale = 1.0f, float dpiScale = 1.0f)
 	{
 		Metrics metrics;
 		const float scale = std::max(uiScale, 1.0f) * std::max(dpiScale, 1.0f);
@@ -38,7 +38,9 @@ namespace Quentlam::EditorToolbarLayout
 		metrics.ButtonSize = std::clamp(std::round(kBaseButtonSize * scale), kMinButtonSize * scale, kMaxButtonSize * scale);
 		const float paddingX = std::round(kHorizontalPadding * scale);
 		const float paddingY = std::round(kVerticalPadding * scale);
-		metrics.WindowWidth = metrics.ButtonSize + (paddingX * 2.0f);
+		
+		const float buttonSpacing = std::round(8.0f * scale);
+		metrics.WindowWidth = (metrics.ButtonSize * numButtons) + (buttonSpacing * std::max(0, numButtons - 1)) + (paddingX * 2.0f);
 		metrics.WindowHeight = metrics.ButtonSize + (paddingY * 2.0f);
 		metrics.ButtonX = paddingX;
 		metrics.ButtonY = paddingY;

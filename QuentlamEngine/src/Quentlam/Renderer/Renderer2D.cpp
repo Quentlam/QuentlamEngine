@@ -79,6 +79,7 @@ namespace Quentlam
 		s_Data.QuadVertexArray->AddVertexBuffer(s_Data.QuadVertexBuffer);
 
 		s_Data.QuadVertexBufferBase = new QuadVertex[s_Data.MaxVertices];
+		s_Data.QuadVertexBufferPtr = s_Data.QuadVertexBufferBase;
 
 		uint32_t* quadIndices = new uint32_t[s_Data.MaxIndices];
 
@@ -150,9 +151,9 @@ namespace Quentlam
 		s_Data.QuadVertexPosition[2] = { 0.5f,  0.5f,0.0f,1.0f };
 		s_Data.QuadVertexPosition[3] = { -0.5f, 0.5f,0.0f,1.0f };
 
-		s_Data.TriangleVertexPosition[0] = { 0.0f, 0.5f, 0.0f, 1.0f }; // Top
-		s_Data.TriangleVertexPosition[1] = { -0.5f, -0.5f, 0.0f, 1.0f }; // Bottom-left
-		s_Data.TriangleVertexPosition[2] = { 0.5f, -0.5f, 0.0f, 1.0f }; // Bottom-right
+		s_Data.TriangleVertexPosition[0] = { -0.5f, -0.5f, 0.0f, 1.0f };
+		s_Data.TriangleVertexPosition[1] = { 0.5f, -0.5f, 0.0f, 1.0f };
+		s_Data.TriangleVertexPosition[2] = { 0.0f, 0.5f, 0.0f, 1.0f };
 	}
 
 	void Renderer2D::Shutdown()
@@ -338,7 +339,7 @@ namespace Quentlam
 		QL_PROFILE_FUNCTION();
 		constexpr size_t triangleVertexCount = 3;
 		const float textureIndex = 0.0f; // White Texture
-		constexpr glm::vec2 textureCoords[] = { { 0.5f, 1.0f }, { 0.0f, 0.0f },{ 1.0f, 0.0f } };
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f },{ 0.5f, 1.0f } };
 		const float tilingFactor = 1.0f;
 
 		if (s_Data.TriangleIndexCount >= Renderer2DData::MaxIndices)
@@ -357,6 +358,48 @@ namespace Quentlam
 
 		s_Data.TriangleIndexCount += 3;
 		s_Data.Stats.QuadCount++; // We'll count triangles in quadcount for simplicity
+	}
+
+	void Renderer2D::DrawTriangle(const glm::mat4& transform, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tintColor, int entityID)
+	{
+		QL_PROFILE_FUNCTION();
+		constexpr size_t triangleVertexCount = 3;
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f },{ 0.5f, 1.0f } };
+
+		if (s_Data.TriangleIndexCount >= Renderer2DData::MaxIndices || s_Data.TextureSlotIndex >= Renderer2DData::MaxTextureSlots)
+			FlushAndReset();
+
+		float textureIndex = 0.0f;
+
+		for (uint32_t i = 1; i < s_Data.TextureSlotIndex; i++)
+		{
+			if (*s_Data.TextureSlots[i].get() == *texture.get())
+			{
+				textureIndex = (float)i;
+				break;
+			}
+		}
+
+		if (textureIndex == 0.0f)
+		{
+			textureIndex = (float)s_Data.TextureSlotIndex;
+			s_Data.TextureSlots[s_Data.TextureSlotIndex] = texture;
+			s_Data.TextureSlotIndex++;
+		}
+
+		for (size_t i = 0; i < triangleVertexCount; i++)
+		{
+			s_Data.TriangleVertexBufferPtr->Position = transform * s_Data.TriangleVertexPosition[i];
+			s_Data.TriangleVertexBufferPtr->Color = tintColor;
+			s_Data.TriangleVertexBufferPtr->TexCoord = textureCoords[i];
+			s_Data.TriangleVertexBufferPtr->TexIndex = textureIndex;
+			s_Data.TriangleVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data.TriangleVertexBufferPtr->EntityID = entityID;
+			s_Data.TriangleVertexBufferPtr++;
+		}
+
+		s_Data.TriangleIndexCount += 3;
+		s_Data.Stats.QuadCount++;
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& color, int entityID)

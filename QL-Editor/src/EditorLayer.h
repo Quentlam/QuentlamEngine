@@ -98,6 +98,10 @@ namespace Quentlam
 		bool m_IsSceneTransitioning = false;
 		bool m_ShowQuickAddPanel = false;
 		char m_QuickAddSearchBuffer[128] = "";
+
+		bool m_ShowSaveNotification = false;
+		float m_SaveNotificationTimer = 0.0f;
+
 		SceneState m_LastToolbarVisualState = SceneState::Edit;
 		float m_ToolbarTransitionProgress = 1.0f;
 		std::string m_LastPlayFailure;
@@ -106,6 +110,8 @@ namespace Quentlam
 		glm::vec4 m_OutlineColor = { 1.0f, 0.5f, 0.0f, 1.0f };
 		int m_OutlineWidth = 3;
 		float m_OutlineIntensity = 1.0f;
+
+		bool m_ShowPhysicsColliders = true;
 	};
 
 }

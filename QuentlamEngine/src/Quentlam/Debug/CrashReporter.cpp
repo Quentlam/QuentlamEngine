@@ -54,21 +54,38 @@ namespace Quentlam {
 			WStringToString(function), 
 			line);
 
-		// Raise an exception so that the UnhandledExceptionFilter catches it
-		RaiseException(EXCEPTION_NONCONTINUABLE_EXCEPTION, EXCEPTION_NONCONTINUABLE, 0, NULL);
+		// Use a custom continuable SEH exception instead of C++ throw or NONCONTINUABLE
+		// This allows __try/__except in the engine to safely catch and recover
+		RaiseException(0xE0000001, 0, 0, NULL);
 	}
 
 	static void CustomPureCallHandler()
 	{
 		QL_CORE_FATAL("Pure virtual function call detected");
-		RaiseException(EXCEPTION_NONCONTINUABLE_EXCEPTION, EXCEPTION_NONCONTINUABLE, 0, NULL);
+		RaiseException(0xE0000002, 0, 0, NULL);
 	}
 
 	static void SignalHandler(int signum)
 	{
 		QL_CORE_FATAL("Signal {0} received", signum);
-		// Not perfect, as EXCEPTION_POINTERS is missing, but better than nothing
-		RaiseException(EXCEPTION_NONCONTINUABLE_EXCEPTION, EXCEPTION_NONCONTINUABLE, 0, NULL);
+		
+		// Capture context and generate dump directly before throwing
+		CONTEXT ctx;
+		RtlCaptureContext(&ctx);
+		EXCEPTION_RECORD er = {};
+		er.ExceptionCode = 0xE0000003; 
+		er.ExceptionFlags = 0; // Continuable
+		er.ExceptionAddress = _ReturnAddress();
+		EXCEPTION_POINTERS ep;
+		ep.ContextRecord = &ctx;
+		ep.ExceptionRecord = &er;
+		
+		if (CrashReporter::IsEnabled())
+		{
+			CrashReporter::HandleCrash(&ep);
+		}
+
+		RaiseException(0xE0000003, 0, 0, NULL);
 	}
 
 	void CrashReporter::Init(const CrashReporterConfig& config)
@@ -118,6 +135,12 @@ namespace Quentlam {
 
 	void CrashReporter::SetupExceptionHandlers()
 	{
+		// Force C runtime assertions and errors to stderr instead of popup dialogs
+		_set_error_mode(_OUT_TO_STDERR);
+		_set_abort_behavior(0, _WRITE_ABORT_MSG);
+		_CrtSetReportMode(_CRT_ASSERT, _CRTDBG_MODE_FILE | _CRTDBG_MODE_DEBUG);
+		_CrtSetReportFile(_CRT_ASSERT, _CRTDBG_FILE_STDERR);
+
 		s_PreviousFilter = SetUnhandledExceptionFilter(CustomUnhandledExceptionFilter);
 		_set_invalid_parameter_handler(CustomInvalidParameterHandler);
 		_set_purecall_handler(CustomPureCallHandler);

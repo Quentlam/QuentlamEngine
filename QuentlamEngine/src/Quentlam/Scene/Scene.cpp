@@ -226,8 +226,12 @@ namespace Quentlam
 
 	void Scene::OnUpdateRuntime(Timestep ts)
 	{
-		Physics2D::OnUpdate(this, ts);
-		Physics3D::OnUpdate(this, ts);
+		if (ts > 0.1f) ts = 0.1f;
+		if (ts > 0.0f)
+		{
+			Physics2D::OnUpdate(this, ts);
+			Physics3D::OnUpdate(this, ts);
+		}
 
 		// Render scene
 		OnUpdate(ts);
@@ -235,22 +239,33 @@ namespace Quentlam
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteTransformComponent>);
+		auto spriteView = m_Registry.view<TransformComponent, SpriteTransformComponent>();
 
-
-		//����ɹ��get��ô����޸�������ֵ,��Ϊget���ڵ���һ����ʱ����ֵ,���ֲ��������
-		//for (auto entity : group)
-		//{
-		//	auto& [transform, sprite] = group.get<TransformComponent, SpriteTransformComponent>(entity);
-
-		//	Renderer2D::DrawQuad(transform, sprite.Color);
-		//}
-
-		//2. ɹ�� each() �Զ�����eachѭ�����ÿһ����Ԫ�ض����������������޸�
-		for (auto [entity, transform, sprite] : group.each())
+		for (auto entity : spriteView)
 		{
-			// ����� transform ���� TransformComponent&��sprite ���� SpriteTransformComponent&
-			Renderer2D::DrawQuad(transform.Transform, sprite.Color, (int)(uint32_t)entity);
+			auto [transform, sprite] = spriteView.get<TransformComponent, SpriteTransformComponent>(entity);
+			if (sprite.Texture)
+			{
+				Renderer2D::DrawQuad(transform.Transform, sprite.Texture, 1.0f, sprite.Color, (int)(uint32_t)entity);
+			}
+			else
+			{
+				Renderer2D::DrawQuad(transform.Transform, sprite.Color, (int)(uint32_t)entity);
+			}
+		}
+
+		auto triView = m_Registry.view<TransformComponent, TriangleRendererComponent>();
+		for (auto entity : triView)
+		{
+			auto [transform, sprite] = triView.get<TransformComponent, TriangleRendererComponent>(entity);
+			if (sprite.Texture)
+			{
+				Renderer2D::DrawTriangle(transform.Transform, sprite.Texture, 1.0f, sprite.Color, (int)(uint32_t)entity);
+			}
+			else
+			{
+				Renderer2D::DrawTriangle(transform.Transform, sprite.Color, (int)(uint32_t)entity);
+			}
 		}
 
 	}

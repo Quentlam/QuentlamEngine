@@ -72,12 +72,23 @@ namespace Quentlam
 	{ 
 		QL_PROFILE_FUNCTION();
 
+		// Target frame rate logic
+		const float targetFPS = 120.0f;
+		const float targetFrameTime = 1.0f / targetFPS;
+
 		while (m_Running)
 		{
 			QL_PROFILE_SCOPE("RunLoop");
 
 			float time = (float)glfwGetTime();
 			Timestep timestep = time - m_LastFrameTime;
+
+			// If the time elapsed is less than our target frame time, wait
+			if (timestep < targetFrameTime)
+			{
+				continue; // Or use std::this_thread::sleep_for for better CPU usage if desired
+			}
+
 			m_LastFrameTime = time;
 
 			ResourceManager::Update();

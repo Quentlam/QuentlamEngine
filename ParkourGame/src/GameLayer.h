@@ -2,9 +2,10 @@
 
 #include "Quentlam/Core/Layer.h"
 #include "Quentlam/Renderer/OrthographicCamera.h"
-#include "Level.h"
+#include "Quentlam/Scene/Scene.h"
 #include "imgui/imgui.h"
 #include "Quentlam/Events/MouseEvent.h"
+#include "Quentlam/Events/KeyEvent.h"
 #include "Quentlam/Events/ApplicationEvent.h"
 #include "Quentlam/Events/Event.h"
 
@@ -42,23 +43,17 @@ public:
 	void OnImGuiLayer() override;
 	void OnEvent(Quentlam::Event& event)override;
 	bool OnMouseButtonPressed(Quentlam::MouseButtonPressedEvent& e);
+	bool OnKeyPressed(Quentlam::KeyPressedEvent& e);
 	bool OnWindowsResize(Quentlam::WindowResizeEvent& e);
 
 	void CreateCamera(uint32_t width, uint32_t height);
 
 private:
 	Quentlam::Scope<Quentlam::OrthographicCamera> m_Camera;
-	Level m_Level;
+	Quentlam::Ref<Quentlam::Scene> m_ActiveScene;
 	ImFont* m_Font;	
 	float m_Time = 0.0f;
 	bool m_Blink = false;
-
-	enum class PlayState
-	{
-		Play = 0, MainMenu = 1, GameOver = 2
-	};
-
-	PlayState m_State = PlayState::MainMenu;
 };
 
 

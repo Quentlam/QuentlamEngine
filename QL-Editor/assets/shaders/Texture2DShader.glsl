@@ -88,5 +88,7 @@ void main()
 	case 31:texColor *= texture(u_Textures[31],v_TexCoord * v_TilingFactor); break;
 	}
 	color = texColor;
+	if (color.a < 0.1)
+		discard;
 	color2 = v_EntityID;
 }

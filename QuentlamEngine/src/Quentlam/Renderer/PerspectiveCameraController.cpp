@@ -106,10 +106,20 @@ namespace Quentlam
 	bool PerspectiveCameraController::OnMouseScrolled(MouseScrolledEvent& e)
 	{
 		QL_PROFILE_FUNCTION();
-		m_ZoomLevel -= e.GetYOffset() * 2.0f;
-		m_ZoomLevel = std::max(m_ZoomLevel, 10.0f); // Limit max zoom
-		m_ZoomLevel = std::min(m_ZoomLevel, 120.0f); // Limit min zoom
-		m_Camera.SetProjection(m_ZoomLevel, m_AspectRatio);
+		
+		float yaw = glm::radians(m_CameraRotation.y);
+		float pitch = glm::radians(m_CameraRotation.x);
+		glm::vec3 forward = {
+			-sin(yaw) * cos(pitch),
+			sin(pitch),
+			-cos(yaw) * cos(pitch)
+		};
+		forward = glm::normalize(forward);
+
+		// Move camera position forward/backward instead of changing FOV (ZoomLevel)
+		m_CameraPosition += forward * (e.GetYOffset() * 2.0f);
+		m_Camera.SetPosition(m_CameraPosition);
+
 		return false;
 	}
 

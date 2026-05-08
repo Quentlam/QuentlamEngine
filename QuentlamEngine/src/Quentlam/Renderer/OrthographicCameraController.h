@@ -24,7 +24,10 @@ public:
 	const OrthographicCamera& GetCamera() const{ return m_Camera; };
 
 	float GetZoomLevel() const { return m_ZoomLevel; }
-	void SetZoomLevel(float level) { m_ZoomLevel = level; }
+	void SetZoomLevel(float level) { m_ZoomLevel = level; m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel); }
+
+	glm::vec3 GetPosition() const { return m_CameraPosition; }
+	void SetPosition(const glm::vec3& position) { m_CameraPosition = position; m_Camera.SetPosition(position); }
 private:
 	bool OnMouseScrolled(MouseScrolledEvent& e);
 	bool OnWindowsResized(WindowResizeEvent& e);

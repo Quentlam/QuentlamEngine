@@ -254,7 +254,86 @@ project "Sandbox"
 
 	links
 	{
-		"QuentlamEngine"
+		"QuentlamEngine",
+		"Box2D"
+	}
+
+	filter "system:windows"
+		staticruntime "On"
+		systemversion "latest"
+
+	defines
+	{
+		"QL_PLATFORM_WINDOWS",
+		table.unpack(CoreProjectDefines)
+	}
+
+	filter "configurations:Debug"
+		defines "QL_DEBUG"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
+		runtime "Debug"
+		symbols "on"
+
+	filter "configurations:Release"
+		defines "QL_RELEASE"
+		defines { "JPH_PROFILE_ENABLED", "JPH_DEBUG_RENDERER" }
+		runtime "Release"
+		optimize "on"
+		symbols "on"
+
+	filter "configurations:Dist"
+		defines "QL_DIST"
+		runtime "Release"
+		optimize "on"
+		symbols "on"
+
+project "ParkourCore"
+	location "ParkourGame/ParkourCore"
+	kind "Staticlib"
+	language "C++"
+	cppdialect "C++20"
+	staticruntime "on"
+	
+	targetdir("bin/" ..outputdir.. "/%{prj.name}")
+	objdir("bin-int/" ..outputdir.. "/%{prj.name}")
+
+	pchheader "qlpch.h"
+	pchsource "QuentlamEngine/src/qlpch.cpp"
+	forceincludes "qlpch.h"
+
+	files
+	{
+		"QuentlamEngine/src/qlpch.h",
+		"QuentlamEngine/src/qlpch.cpp",
+		"ParkourGame/ParkourCore/src/**.h",
+		"ParkourGame/ParkourCore/src/**.cpp",
+	}
+
+	includedirs
+	{
+		"QuentlamEngine/vendor/spdlog/include",
+		"QuentlamEngine/src",
+		"QuentlamEngine/vendor",
+		"QuentlamEngine/vendor/JoltPhysics",
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.Glad}",
+		"%{IncludeDir.Box2D}",
+		"%{IncludeDir.assimp}",
+		"%{IncludeDir.assimp_build}"
+	}
+
+	externalincludedirs
+	{
+		table.unpack(CoreProjectIncludeDirs)
+	}
+
+	links
+	{
+		"QuentlamEngine",
+		"Box2D"
 	}
 
 	filter "system:windows"
@@ -307,7 +386,6 @@ project "ParkourGame"
 		"QuentlamEngine/src/qlpch.cpp",
 		"ParkourGame/src/**.h",
 		"ParkourGame/src/**.cpp",
-		"QL-Editor/src/EditorToolbarLayout.h",
 	}
 
 	includedirs
@@ -324,7 +402,7 @@ project "ParkourGame"
 		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.assimp}",
 		"%{IncludeDir.assimp_build}",
-		"QL-Editor/src"
+		"ParkourGame/ParkourCore/src"
 	}
 
 	externalincludedirs
@@ -334,7 +412,9 @@ project "ParkourGame"
 
 	links
 	{
-		"QuentlamEngine"
+		"ParkourCore",
+		"QuentlamEngine",
+		"Box2D"
 	}
 
 	filter "system:windows"
@@ -368,7 +448,7 @@ project "ParkourGame"
 
 project "QL-Editor"
 	location "QL-Editor"
-	kind "ConsoleAPP"
+	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++20"
 	staticruntime "on"
@@ -400,8 +480,10 @@ project "QL-Editor"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.Glad}",
+		"%{IncludeDir.Box2D}",
 		"%{IncludeDir.assimp}",
-		"%{IncludeDir.assimp_build}"
+		"%{IncludeDir.assimp_build}",
+		"ParkourGame/ParkourCore/src"
 	}
 
 	externalincludedirs
@@ -411,7 +493,9 @@ project "QL-Editor"
 
 	links
 	{
-		"QuentlamEngine"
+		"ParkourCore",
+		"QuentlamEngine",
+		"Box2D"
 	}
 
 	filter "system:windows"

@@ -12,18 +12,24 @@ namespace Quentlam
 	struct CubeVertex
 	{
 		glm::vec3 Position;
+		glm::vec3 Normal;
 		glm::vec4 Color;
 		glm::vec2 TexCoord;
 		float TexIndex;
 		float TilingFactor;
 		int EntityID;
+		
+		float AmbientStrength;
+		float DiffuseStrength;
+		float SpecularStrength;
+		float Shininess;
 	};
 
 	struct Renderer3DData
 	{
-		static const uint32_t MaxCubes = 1000;
-		static const uint32_t MaxVertices = MaxCubes * 8; // 8 unique vertices per cube if flat shaded, but usually 24 for proper normals. For simplicity, we'll use 24 vertices for a cube (4 per face * 6 faces) to allow proper texture mapping per face. Let's use 24.
-		static const uint32_t MaxIndices = MaxCubes * 36; // 6 faces * 2 triangles * 3 indices
+		static const uint32_t MaxCubes = 10000;
+		static const uint32_t MaxVertices = MaxCubes * 24;
+		static const uint32_t MaxIndices = MaxCubes * 36;
 		static const uint32_t MaxTextureSlots = 32;
 
 		Ref<VertexArray> CubeVertexArray;
@@ -40,6 +46,7 @@ namespace Quentlam
 		uint32_t TextureSlotIndex = 1; // 0 = white texture
 
 		glm::vec4 CubeVertexPositions[24];
+		glm::vec3 CubeVertexNormals[24];
 		glm::vec2 CubeTexCoords[24];
 
 		Renderer3D::Statistics Stats;
@@ -58,11 +65,16 @@ namespace Quentlam
 		s_Data3D.CubeVertexBuffer = VertexBuffer::Create(maxVertices * sizeof(CubeVertex));
 		s_Data3D.CubeVertexBuffer->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float4, "a_Color" },
 			{ ShaderDataType::Float2, "a_TexCoord" },
 			{ ShaderDataType::Float,  "a_TexIndex" },
 			{ ShaderDataType::Float,  "a_TilingFactor" },
-			{ ShaderDataType::Int,    "a_EntityID" }
+			{ ShaderDataType::Int,    "a_EntityID" },
+			{ ShaderDataType::Float,  "a_AmbientStrength" },
+			{ ShaderDataType::Float,  "a_DiffuseStrength" },
+			{ ShaderDataType::Float,  "a_SpecularStrength" },
+			{ ShaderDataType::Float,  "a_Shininess" }
 		});
 		s_Data3D.CubeVertexArray->AddVertexBuffer(s_Data3D.CubeVertexBuffer);
 
@@ -100,7 +112,7 @@ namespace Quentlam
 			samplers[i] = i;
 
 		// Reusing the 2D texture shader for now, ideally 3D needs its own shader with lighting
-		s_Data3D.TextureShader = Shader::Create("assets/shaders/Texture2DShader.glsl");
+		s_Data3D.TextureShader = Shader::Create("assets/shaders/CubeShader.glsl");
 		s_Data3D.TextureShader->Bind();
 		s_Data3D.TextureShader->SetIntArray("u_Textures", samplers, s_Data3D.MaxTextureSlots);
 
@@ -140,6 +152,14 @@ namespace Quentlam
 		s_Data3D.CubeVertexPositions[22] = {  0.5f, -0.5f,  0.5f, 1.0f };
 		s_Data3D.CubeVertexPositions[23] = { -0.5f, -0.5f,  0.5f, 1.0f };
 
+		// Normals
+		for (int i = 0; i < 4; i++) s_Data3D.CubeVertexNormals[i] = { 0.0f, 0.0f, 1.0f }; // Front
+		for (int i = 4; i < 8; i++) s_Data3D.CubeVertexNormals[i] = { 0.0f, 0.0f, -1.0f }; // Back
+		for (int i = 8; i < 12; i++) s_Data3D.CubeVertexNormals[i] = { -1.0f, 0.0f, 0.0f }; // Left
+		for (int i = 12; i < 16; i++) s_Data3D.CubeVertexNormals[i] = { 1.0f, 0.0f, 0.0f }; // Right
+		for (int i = 16; i < 20; i++) s_Data3D.CubeVertexNormals[i] = { 0.0f, 1.0f, 0.0f }; // Top
+		for (int i = 20; i < 24; i++) s_Data3D.CubeVertexNormals[i] = { 0.0f, -1.0f, 0.0f }; // Bottom
+
 		for (int i = 0; i < 6; i++)
 		{
 			s_Data3D.CubeTexCoords[i * 4 + 0] = { 0.0f, 0.0f };
@@ -161,6 +181,13 @@ namespace Quentlam
 
 		s_Data3D.TextureShader->Bind();
 		s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		
+		// Default Lighting for 3D primitives
+		s_Data3D.TextureShader->SetFloat("u_AmbientStrength", 0.3f);
+		s_Data3D.TextureShader->SetFloat("u_DiffuseStrength", 0.8f);
+		s_Data3D.TextureShader->SetFloat("u_SpecularStrength", 0.5f);
+		s_Data3D.TextureShader->SetFloat("u_Shininess", 32.0f);
+		s_Data3D.TextureShader->SetFloat3("u_ViewPos", camera.GetPosition());
 
 		s_Data3D.ModelShader->Bind();
 		s_Data3D.ModelShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
@@ -177,6 +204,13 @@ namespace Quentlam
 
 		s_Data3D.TextureShader->Bind();
 		s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
+		// Default Lighting for 3D primitives
+		s_Data3D.TextureShader->SetFloat("u_AmbientStrength", 0.3f);
+		s_Data3D.TextureShader->SetFloat("u_DiffuseStrength", 0.8f);
+		s_Data3D.TextureShader->SetFloat("u_SpecularStrength", 0.5f);
+		s_Data3D.TextureShader->SetFloat("u_Shininess", 32.0f);
+		s_Data3D.TextureShader->SetFloat3("u_ViewPos", camera.GetPosition());
 
 		s_Data3D.ModelShader->Bind();
 		s_Data3D.ModelShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
@@ -239,7 +273,7 @@ namespace Quentlam
 		DrawCube(transform, color, entityID);
 	}
 
-	void Renderer3D::DrawCube(const glm::mat4& transform, const glm::vec4& color, int entityID)
+	void Renderer3D::DrawCube(const glm::mat4& transform, const glm::vec4& color, int entityID, float ambient, float diffuse, float specular, float shininess)
 	{
 		QL_PROFILE_FUNCTION();
 
@@ -248,15 +282,22 @@ namespace Quentlam
 
 		const float textureIndex = 0.0f;
 		const float tilingFactor = 1.0f;
+		
+		glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
 
 		for (uint32_t i = 0; i < 24; i++)
 		{
 			s_Data3D.CubeVertexBufferPtr->Position = transform * s_Data3D.CubeVertexPositions[i];
+			s_Data3D.CubeVertexBufferPtr->Normal = normalMatrix * s_Data3D.CubeVertexNormals[i];
 			s_Data3D.CubeVertexBufferPtr->Color = color;
 			s_Data3D.CubeVertexBufferPtr->TexCoord = s_Data3D.CubeTexCoords[i];
 			s_Data3D.CubeVertexBufferPtr->TexIndex = textureIndex;
 			s_Data3D.CubeVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data3D.CubeVertexBufferPtr->EntityID = entityID;
+			s_Data3D.CubeVertexBufferPtr->AmbientStrength = ambient;
+			s_Data3D.CubeVertexBufferPtr->DiffuseStrength = diffuse;
+			s_Data3D.CubeVertexBufferPtr->SpecularStrength = specular;
+			s_Data3D.CubeVertexBufferPtr->Shininess = shininess;
 			s_Data3D.CubeVertexBufferPtr++;
 		}
 
@@ -264,7 +305,7 @@ namespace Quentlam
 		s_Data3D.Stats.CubeCount++;
 	}
 
-	void Renderer3D::DrawCube(const glm::mat4& transform, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tintColor, int entityID)
+	void Renderer3D::DrawCube(const glm::mat4& transform, const Ref<Texture2D>& texture, const float tilingFactor, const glm::vec4& tintColor, int entityID, float ambient, float diffuse, float specular, float shininess)
 	{
 		QL_PROFILE_FUNCTION();
 
@@ -291,20 +332,162 @@ namespace Quentlam
 			s_Data3D.TextureSlots[s_Data3D.TextureSlotIndex] = texture;
 			s_Data3D.TextureSlotIndex++;
 		}
+		
+		glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
 
 		for (uint32_t i = 0; i < 24; i++)
 		{
 			s_Data3D.CubeVertexBufferPtr->Position = transform * s_Data3D.CubeVertexPositions[i];
+			s_Data3D.CubeVertexBufferPtr->Normal = normalMatrix * s_Data3D.CubeVertexNormals[i];
 			s_Data3D.CubeVertexBufferPtr->Color = tintColor;
 			s_Data3D.CubeVertexBufferPtr->TexCoord = s_Data3D.CubeTexCoords[i];
 			s_Data3D.CubeVertexBufferPtr->TexIndex = textureIndex;
 			s_Data3D.CubeVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data3D.CubeVertexBufferPtr->EntityID = entityID;
+			s_Data3D.CubeVertexBufferPtr->AmbientStrength = ambient;
+			s_Data3D.CubeVertexBufferPtr->DiffuseStrength = diffuse;
+			s_Data3D.CubeVertexBufferPtr->SpecularStrength = specular;
+			s_Data3D.CubeVertexBufferPtr->Shininess = shininess;
 			s_Data3D.CubeVertexBufferPtr++;
 		}
 
 		s_Data3D.CubeIndexCount += 36;
 		s_Data3D.Stats.CubeCount++;
+	}
+
+	void Renderer3D::DrawCapsule(const glm::mat4& transform, const glm::vec4& color, int entityID, float ambient, float diffuse, float specular, float shininess)
+	{
+		QL_PROFILE_FUNCTION();
+
+		// Smooth Capsule Implementation using Quads (compatible with existing Index Buffer)
+		// A capsule consists of a cylinder body and two hemispherical caps.
+		
+		uint32_t segments = 16;
+		uint32_t rings = 8;
+		float radius = 0.5f;
+		float halfHeight = 0.5f; // Total height will be 1.0 (0.5 cylinder + 0.5 + 0.5 caps? No, let's make it total height 2.0 like the cubes)
+		// User's previous pillars were scale(0.5, 2.0, 0.5). 
+		// A unit capsule in most engines is radius 0.5, total height 2.0 (cylinder height 1.0 + two 0.5 radius caps).
+		float cylinderHeight = 1.0f;
+		
+		auto pushQuad = [&](const glm::vec3& p0, const glm::vec3& p1, const glm::vec3& p2, const glm::vec3& p3,
+						   const glm::vec3& n0, const glm::vec3& n1, const glm::vec3& n2, const glm::vec3& n3)
+		{
+			if (s_Data3D.CubeIndexCount + 6 >= s_Data3D.MaxIndices)
+				FlushAndReset();
+
+			glm::vec3 pos[4] = { p0, p1, p2, p3 };
+			glm::vec3 norm[4] = { n0, n1, n2, n3 };
+			glm::vec2 tex[4] = { {0,0}, {1,0}, {1,1}, {0,1} };
+
+			glm::mat3 normalMatrix = glm::transpose(glm::inverse(glm::mat3(transform)));
+
+			for (int i = 0; i < 4; i++)
+			{
+				s_Data3D.CubeVertexBufferPtr->Position = transform * glm::vec4(pos[i], 1.0f);
+				s_Data3D.CubeVertexBufferPtr->Normal = normalMatrix * norm[i];
+				s_Data3D.CubeVertexBufferPtr->Color = color;
+				s_Data3D.CubeVertexBufferPtr->TexCoord = tex[i];
+				s_Data3D.CubeVertexBufferPtr->TexIndex = 0.0f;
+				s_Data3D.CubeVertexBufferPtr->TilingFactor = 1.0f;
+				s_Data3D.CubeVertexBufferPtr->EntityID = entityID;
+				s_Data3D.CubeVertexBufferPtr->AmbientStrength = ambient;
+				s_Data3D.CubeVertexBufferPtr->DiffuseStrength = diffuse;
+				s_Data3D.CubeVertexBufferPtr->SpecularStrength = specular;
+				s_Data3D.CubeVertexBufferPtr->Shininess = shininess;
+				s_Data3D.CubeVertexBufferPtr++;
+			}
+			
+			// We need to skip the other 20 vertices that the index buffer expects for a "Cube" slot
+			// because our index buffer is hardcoded for 24-vertex chunks.
+			// To reuse the index buffer (0,1,2, 2,3,0), we must submit 4 vertices and then "waste" 20.
+			// Alternatively, we can just fill 6 quads (a cube) or update the index buffer logic.
+			// Easiest hack: submit 6 quads where 5 are degenerate (zero area) or just fill the 24.
+			for (int i = 0; i < 20; i++)
+			{
+				*s_Data3D.CubeVertexBufferPtr = *(s_Data3D.CubeVertexBufferPtr - 1);
+				s_Data3D.CubeVertexBufferPtr->Position = s_Data3D.CubeVertexBufferPtr[-1].Position; // degenerate
+				s_Data3D.CubeVertexBufferPtr++;
+			}
+
+			s_Data3D.CubeIndexCount += 36;
+			s_Data3D.Stats.CubeCount++;
+		};
+
+		// 1. Cylinder Body
+		for (uint32_t i = 0; i < segments; i++)
+		{
+			float a0 = (float)i / segments * 2.0f * 3.14159f;
+			float a1 = (float)(i + 1) / segments * 2.0f * 3.14159f;
+
+			glm::vec3 n0(glm::cos(a0), 0, glm::sin(a0));
+			glm::vec3 n1(glm::cos(a1), 0, glm::sin(a1));
+
+			glm::vec3 p0 = n0 * radius + glm::vec3(0, -cylinderHeight * 0.5f, 0);
+			glm::vec3 p1 = n1 * radius + glm::vec3(0, -cylinderHeight * 0.5f, 0);
+			glm::vec3 p2 = n1 * radius + glm::vec3(0,  cylinderHeight * 0.5f, 0);
+			glm::vec3 p3 = n0 * radius + glm::vec3(0,  cylinderHeight * 0.5f, 0);
+
+			pushQuad(p0, p1, p2, p3, n0, n1, n1, n0);
+		}
+
+		// 2. Top Hemisphere
+		for (uint32_t r = 0; r < rings; r++)
+		{
+			float phi0 = (float)r / rings * 0.5f * 3.14159f;
+			float phi1 = (float)(r + 1) / rings * 0.5f * 3.14159f;
+
+			for (uint32_t i = 0; i < segments; i++)
+			{
+				float theta0 = (float)i / segments * 2.0f * 3.14159f;
+				float theta1 = (float)(i + 1) / segments * 2.0f * 3.14159f;
+
+				auto getSpherePos = [&](float phi, float theta) {
+					return glm::vec3(
+						glm::cos(phi) * glm::cos(theta),
+						glm::sin(phi),
+						glm::cos(phi) * glm::sin(theta)
+					);
+				};
+
+				glm::vec3 n0 = getSpherePos(phi0, theta0);
+				glm::vec3 n1 = getSpherePos(phi0, theta1);
+				glm::vec3 n2 = getSpherePos(phi1, theta1);
+				glm::vec3 n3 = getSpherePos(phi1, theta0);
+
+				glm::vec3 offset(0, cylinderHeight * 0.5f, 0);
+				pushQuad(n0 * radius + offset, n1 * radius + offset, n2 * radius + offset, n3 * radius + offset, n0, n1, n2, n3);
+			}
+		}
+
+		// 3. Bottom Hemisphere
+		for (uint32_t r = 0; r < rings; r++)
+		{
+			float phi0 = -(float)r / rings * 0.5f * 3.14159f;
+			float phi1 = -(float)(r + 1) / rings * 0.5f * 3.14159f;
+
+			for (uint32_t i = 0; i < segments; i++)
+			{
+				float theta0 = (float)i / segments * 2.0f * 3.14159f;
+				float theta1 = (float)(i + 1) / segments * 2.0f * 3.14159f;
+
+				auto getSpherePos = [&](float phi, float theta) {
+					return glm::vec3(
+						glm::cos(phi) * glm::cos(theta),
+						glm::sin(phi),
+						glm::cos(phi) * glm::sin(theta)
+					);
+				};
+
+				glm::vec3 n0 = getSpherePos(phi0, theta0);
+				glm::vec3 n1 = getSpherePos(phi0, theta1);
+				glm::vec3 n2 = getSpherePos(phi1, theta1);
+				glm::vec3 n3 = getSpherePos(phi1, theta0);
+
+				glm::vec3 offset(0, -cylinderHeight * 0.5f, 0);
+				pushQuad(n3 * radius + offset, n2 * radius + offset, n1 * radius + offset, n0 * radius + offset, n3, n2, n1, n0);
+			}
+		}
 	}
 
 	void Renderer3D::ResetStats()
