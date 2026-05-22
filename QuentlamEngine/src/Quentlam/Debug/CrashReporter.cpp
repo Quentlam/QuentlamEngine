@@ -281,7 +281,8 @@ namespace Quentlam {
 			abort();
 			break;
 		case 2: // Invalid Parameter
-			_invalid_parameter(L"Simulated", L"SimulateCrash", L"CrashReporter.cpp", 1, 0);
+			// _invalid_parameter(L"Simulated", L"SimulateCrash", L"CrashReporter.cpp", 1, 0);
+			abort();
 			break;
 		case 3: // Pure call
 			_purecall();

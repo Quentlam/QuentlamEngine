@@ -105,6 +105,8 @@ project "JoltPhysics"
 		"JPH_PROFILE_ENABLED",
 		"JPH_DEBUG_RENDERER"
 	}
+	
+	buildoptions { "/FS" }
 
 	filter "system:windows"
 		systemversion "latest"
