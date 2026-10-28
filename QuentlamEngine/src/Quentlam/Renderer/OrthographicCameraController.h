@@ -4,7 +4,7 @@
 
 #include "../Events/ApplicationEvent.h"
 #include "../Events/MouseEvent.h"
-
+#include "Camera.h"
 namespace Quentlam 
 {
 

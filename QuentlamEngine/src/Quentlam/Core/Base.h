@@ -42,10 +42,10 @@
 #if QL_DYNAMIC_LINK
 	#ifdef QL_BUILD_DLL
 		#define QUENTLAM_API __declspec(dllexport)
-		#define IMGUI_API 	__declspec(dllexport)
+		#define IMGUI_API __declspec(dllexport)
 	#else
 		#define QUENTLAM_API __declspec(dllimport)
-		#define IMGUI_API 	__declspec(dllimport)
+		#define IMGUI_API __declspec(dllimport)
 	#endif
 #else
 	#define QUENTLAM_API

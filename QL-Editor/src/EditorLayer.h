@@ -40,9 +40,13 @@ namespace Quentlam
 		Ref<Shader>         m_FlatColorShader;
 
 		Entity m_SquareEntity;
-
+		
 
 		Ref<Scene>	m_ActiveScene;
+		Entity      m_CameraEntity;
+		Entity      m_SecondCameraEntity;
+		bool        m_PrimaryCamera = true;
+
 
 		glm::vec4 m_Square_Color{ 0.3f, 0.3f, 0.8f,1.0f };
 

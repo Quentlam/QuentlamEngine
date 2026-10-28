@@ -51,23 +51,35 @@ namespace Quentlam
 
 	void Scene::OnUpdate(Timestep ts)
 	{
-		auto group = m_Registry.group<TransformComponent>(entt::get<SpriteTransformComponent>);
-
-
-		//这里使用get会没办法修改组件的值,因为get返回的是一个临时的右值,所以不能引用
-		//for (auto entity : group)
-		//{
-		//	auto& [transform, sprite] = group.get<TransformComponent, SpriteTransformComponent>(entity);
-
-		//	Renderer2D::DrawQuad(transform, sprite.Color);
-		//}
-
-		//2. 使用 each() 自动解包！each循环里的每一个子元素都是引用，所以可以修改
-		for (auto [entity, transform, sprite] : group.each())
+		Camera* mainCamera = nullptr;
+		glm::mat4* cameraTransform = nullptr;
 		{
-			// 这里的 transform 就是 TransformComponent&，sprite 就是 SpriteTransformComponent&
-			Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+			for (auto [entity, transform, camera] : m_Registry.view<TransformComponent, CameraComponent>().each())
+			{
+				if (camera.Primary)
+				{
+					mainCamera = &camera.Camera;
+					cameraTransform = &transform.Transform;
+					break;
+				}
+			}
 		}
+
+
+		if (mainCamera)
+		{
+			Renderer2D::BeginScene(mainCamera->GetProjection(),*cameraTransform);
+
+			auto group = m_Registry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+			for (auto [entity, transform, sprite] : group.each())
+			{
+				Renderer2D::DrawQuad(transform.Transform, sprite.Color);
+			}
+
+			Renderer2D::EndScene();
+		}
+
+
 
 	}
 }

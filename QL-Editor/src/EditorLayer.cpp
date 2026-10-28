@@ -37,10 +37,20 @@ namespace Quentlam
 		m_ActiveScene = CreateRef<Scene>();
 
 
-		auto square = m_ActiveScene->CreateEntity("Square");
-		square.AddComponent<SpriteTransformComponent>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
+		Quentlam::Entity square = m_ActiveScene->CreateEntity("Square");
+
+		square.AddComponent<SpriteRendererComponent>(glm::vec4{ 1.0f,0.0f,0.0f,1.0f });
 
 		m_SquareEntity = square;
+
+
+		m_CameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
+		m_CameraEntity.AddComponent<CameraComponent>(glm::ortho(-16.0f, 16.0f, -9.0f, 9.0f, -1.0f, 1.0f));
+
+
+		m_SecondCameraEntity = m_ActiveScene->CreateEntity("CameraEntity");
+		m_SecondCameraEntity.AddComponent<CameraComponent>(glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, -1.0f, 1.0f));
+		m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = false;
 	}
 
 	void EditorLayer::OnDetach()
@@ -76,12 +86,10 @@ namespace Quentlam
 		RenderCommand::SetClearColor(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
 		RenderCommand::Clear();
 
-		Renderer2D::BeginScene(m_CameraController.GetCamera());
-
 		//update scene
 		m_ActiveScene->OnUpdate(ts);
-		Renderer2D::EndScene();
 		m_Framebuffer->UnBind();
+
 
 	}
 
@@ -164,10 +172,18 @@ namespace Quentlam
 			auto& tag = m_SquareEntity.GetComponent<TagComponent>().Tag;
 			ImGui::Text("%s", tag.c_str());
 
-			auto& squareColor = m_SquareEntity.GetComponent<SpriteTransformComponent>().Color;
+			auto& squareColor = m_SquareEntity.GetComponent<SpriteRendererComponent>().Color;
 			ImGui::ColorEdit4("Square color", glm::value_ptr(squareColor));
 			ImGui::Separator();
 		}
+		
+		if (ImGui::Checkbox("Camera A", &m_PrimaryCamera))
+		{
+			m_CameraEntity.GetComponent<CameraComponent>().Primary = !m_PrimaryCamera;
+			m_SecondCameraEntity.GetComponent<CameraComponent>().Primary = m_PrimaryCamera;
+		}
+
+
 
 		ImGui::End();
 

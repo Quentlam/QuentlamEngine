@@ -1,7 +1,7 @@
 #pragma once
 
 #include <glm/glm.hpp>
-
+#include "../Renderer/Camera.h"
 
 
 namespace Quentlam
@@ -32,14 +32,26 @@ namespace Quentlam
 
 	};
 
-	struct SpriteTransformComponent
+	struct SpriteRendererComponent
 	{
 		glm::vec4 Color{ 1.0f,1.0f,1.0f,1.0f };
 
-		SpriteTransformComponent() = default;
-		SpriteTransformComponent(const SpriteTransformComponent&) = default;
-		SpriteTransformComponent(const glm::vec4& color)
+		SpriteRendererComponent() = default;
+		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		SpriteRendererComponent(const glm::vec4& color)
 			:Color(color) {
 		}
+	};
+
+	struct CameraComponent
+	{
+		Quentlam::Camera Camera;
+		bool Primary = true;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const glm::mat4& projection)
+			:Camera(projection) {}
+
 	};
 }
